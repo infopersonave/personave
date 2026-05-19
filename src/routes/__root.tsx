@@ -72,14 +72,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Persona" },
+      { name: "description", content: "Conectamos empresas con talento pre-filtrado en Venezuela. Reclutamiento rápido, humano y preciso para contratar mejor y más rápido." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Persona" },
+      { property: "og:description", content: "Conectamos empresas con talento pre-filtrado en Venezuela. Reclutamiento rápido, humano y preciso para contratar mejor y más rápido." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Persona" },
+      { name: "twitter:description", content: "Conectamos empresas con talento pre-filtrado en Venezuela. Reclutamiento rápido, humano y preciso para contratar mejor y más rápido." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/30b68f3c-d2f2-46ba-8bb3-70f8a31ddc44/id-preview-06ab1b5b--a309e6cb-287c-4ed4-bdf8-e5cdf7ea554c.lovable.app-1779221935221.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/30b68f3c-d2f2-46ba-8bb3-70f8a31ddc44/id-preview-06ab1b5b--a309e6cb-287c-4ed4-bdf8-e5cdf7ea554c.lovable.app-1779221935221.png" },
     ],
     links: [
       {
