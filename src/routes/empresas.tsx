@@ -113,7 +113,24 @@ function Empresas() {
 
 function DemoForm() {
   const [sent, setSent] = useState(false);
-  const onSubmit = (e: FormEvent) => { e.preventDefault(); setSent(true); };
+  const [sending, setSending] = useState(false);
+  const onSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setSending(true);
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    try {
+      await fetch('https://formsubmit.co/ajax/infopersonave@gmail.com', {
+        method: 'POST',
+        body: formData,
+      });
+      setSent(true);
+    } catch {
+      alert('Hubo un error enviando tu solicitud. Inténtalo de nuevo.');
+    } finally {
+      setSending(false);
+    }
+  };
 
   if (sent) {
     return (
@@ -129,16 +146,16 @@ function DemoForm() {
 
   return (
     <form onSubmit={onSubmit} className="glass-strong rounded-3xl p-8 md:p-10 space-y-4">
-      <Field label="Nombre completo *" required />
-      <Field label="Email corporativo *" type="email" required />
-      <Field label="Empresa *" required />
-      <Field label="Cargo" />
+      <Field name="name" label="Nombre completo *" required />
+      <Field name="email" label="Email corporativo *" type="email" required />
+      <Field name="empresa" label="Empresa *" required />
+      <Field name="cargo" label="Cargo" />
       <div>
         <label className="block text-sm font-medium mb-1.5">¿Qué tipo de talento necesitas?</label>
-        <textarea rows={4} className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20" />
+        <textarea name="mensaje" rows={4} className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20" />
       </div>
-      <button type="submit" className="w-full bg-gradient-brand text-white font-semibold py-3.5 rounded-xl shadow-glow hover:shadow-xl transition-all hover:-translate-y-0.5">
-        Solicitar Demo
+      <button type="submit" disabled={sending} className="w-full bg-gradient-brand text-white font-semibold py-3.5 rounded-xl shadow-glow hover:shadow-xl transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed">
+        {sending ? 'Enviando...' : 'Solicitar Demo'}
       </button>
     </form>
   );
