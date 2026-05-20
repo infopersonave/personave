@@ -5,6 +5,7 @@ export function CVUpload() {
   const [file, setFile] = useState<File | null>(null);
   const [dragging, setDragging] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const accept = [".pdf", ".doc", ".docx"];
@@ -34,9 +35,28 @@ export function CVUpload() {
     if (f) handleFile(f);
   };
 
-  const onSubmit = (e: FormEvent) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    if (!file) return;
+    setSending(true);
+
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    formData.append("cv", file);
+    formData.append("_subject", "Nuevo CV en Persona");
+    formData.append("_template", "table");
+
+    try {
+      await fetch("https://formsubmit.co/ajax/infopersonave@gmail.com", {
+        method: "POST",
+        body: formData,
+      });
+      setSubmitted(true);
+    } catch {
+      alert("Hubo un error enviando tu perfil. Inténtalo de nuevo.");
+    } finally {
+      setSending(false);
+    }
   };
 
   if (submitted) {
@@ -103,11 +123,11 @@ export function CVUpload() {
             <Input name="linkedin" label="LinkedIn (opcional)" />
             <div>
               <label className="block text-sm font-medium mb-1.5">¿Qué oportunidades buscas?</label>
-              <textarea rows={3} className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20" />
+              <textarea name="oportunidades" rows={3} className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20" />
             </div>
 
-            <button type="submit" className="w-full bg-gradient-brand text-white font-semibold py-3.5 rounded-xl shadow-glow hover:shadow-xl transition-all hover:-translate-y-0.5">
-              Enviar mi perfil
+            <button type="submit" disabled={sending} className="w-full bg-gradient-brand text-white font-semibold py-3.5 rounded-xl shadow-glow hover:shadow-xl transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed">
+              {sending ? "Enviando..." : "Enviar mi perfil"}
             </button>
           </>
         )}
