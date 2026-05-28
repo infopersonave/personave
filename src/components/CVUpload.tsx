@@ -43,15 +43,21 @@ export function CVUpload() {
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
     formData.append("cv", file);
-    formData.append("_subject", "Nuevo CV en Persona");
-    formData.append("_template", "table");
+    formData.append("access_key", "c68e1aef-fbfe-4e17-8efc-f1c581fdfe60");
+    formData.append("subject", "Nuevo CV en Persona");
+    formData.append("from_name", "Persona - Profesionales");
 
     try {
-      await fetch("https://formsubmit.co/ajax/infopersonave@gmail.com", {
+      const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         body: formData,
       });
-      setSubmitted(true);
+      const data = await res.json();
+      if (data.success) {
+        setSubmitted(true);
+      } else {
+        alert("Hubo un error enviando tu perfil. Inténtalo de nuevo.");
+      }
     } catch {
       alert("Hubo un error enviando tu perfil. Inténtalo de nuevo.");
     } finally {
