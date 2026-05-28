@@ -119,12 +119,20 @@ function DemoForm() {
     setSending(true);
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
+    formData.append('access_key', 'c68e1aef-fbfe-4e17-8efc-f1c581fdfe60');
+    formData.append('subject', 'Nueva solicitud de demo - Persona Empresas');
+    formData.append('from_name', 'Persona - Empresas');
     try {
-      await fetch('https://formsubmit.co/ajax/infopersonave@gmail.com', {
+      const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         body: formData,
       });
-      setSent(true);
+      const data = await res.json();
+      if (data.success) {
+        setSent(true);
+      } else {
+        alert('Hubo un error enviando tu solicitud. Inténtalo de nuevo.');
+      }
     } catch {
       alert('Hubo un error enviando tu solicitud. Inténtalo de nuevo.');
     } finally {
