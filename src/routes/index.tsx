@@ -29,7 +29,7 @@ const stats = [
   { v: "50", l: "Lugares disponibles en lanzamiento" },
   { v: "24-48", l: "Horas para validación de perfil" },
   { v: "100%", l: "Gratis para profesionales" },
-  { v: "🇻🇪", l: "Enfocados en Venezuela" },
+  { v: "VE", l: "Enfocados en Venezuela", flag: true },
 ];
 
 const steps = [
@@ -79,7 +79,13 @@ function Index() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
             {stats.map((s) => (
               <div key={s.l} className="glass-strong rounded-2xl p-8 text-center hover:-translate-y-1 transition-transform">
-                <div className="text-5xl md:text-6xl font-bold text-gradient mb-3">{s.v}</div>
+                {(s as { flag?: boolean }).flag ? (
+                  <div className="mb-3 flex justify-center">
+                    <VenezuelaFlag />
+                  </div>
+                ) : (
+                  <div className="text-5xl md:text-6xl font-bold text-gradient mb-3">{s.v}</div>
+                )}
                 <div className="text-sm text-muted-foreground font-medium">{s.l}</div>
               </div>
             ))}
