@@ -6,8 +6,8 @@ export function Logo({ className = "", variant = "full" }: { className?: string;
     return <img src={icon} alt="Persona" className={`h-10 w-10 rounded-xl ${className}`} />;
   }
   return (
-    <a href="/" className={`inline-flex items-center ${className}`}>
-      <img src={logo} alt="Persona" className="h-24 md:h-32 w-auto" />
+    <a href="/" className={`inline-flex items-center overflow-visible ${className}`}>
+      <img src={logo} alt="Persona" className="h-24 md:h-32 w-auto -my-6" />
     </a>
   );
 }
