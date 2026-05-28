@@ -7,7 +7,7 @@ export function Logo({ className = "", variant = "full" }: { className?: string;
   }
   return (
     <a href="/" className={`inline-flex items-center ${className}`}>
-      <img src={logo} alt="Persona" className="h-9 md:h-10 w-auto" />
+      <img src={logo} alt="Persona" className="h-14 md:h-16 w-auto" />
     </a>
   );
 }
