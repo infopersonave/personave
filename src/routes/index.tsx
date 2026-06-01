@@ -77,12 +77,15 @@ function Index() {
             <h2 className="text-3xl md:text-4xl font-bold">En fase de lanzamiento</h2>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
-            {stats.map((s) => (
-              <div key={s.l} className="glass-strong rounded-2xl p-8 text-center hover:-translate-y-1 transition-transform">
-                <div className="text-5xl md:text-6xl font-bold text-gradient mb-3">{s.v}</div>
-                <div className="text-sm text-muted-foreground font-medium">{s.l}</div>
-              </div>
-            ))}
+            {stats.map((s) => {
+              const isEmoji = /\p{Extended_Pictographic}/u.test(s.v);
+              return (
+                <div key={s.l} className="glass-strong rounded-2xl p-8 text-center hover:-translate-y-1 transition-transform">
+                  <div className={`text-5xl md:text-6xl font-bold mb-3 ${isEmoji ? "" : "text-gradient"}`}>{s.v}</div>
+                  <div className="text-sm text-muted-foreground font-medium">{s.l}</div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
