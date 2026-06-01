@@ -1,5 +1,6 @@
 import { useState, useRef, type ChangeEvent, type DragEvent, type FormEvent } from "react";
 import { Upload, FileText, CheckCircle2, X } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export function CVUpload() {
   const [file, setFile] = useState<File | null>(null);
@@ -40,14 +41,27 @@ export function CVUpload() {
     if (!file) return;
     setSending(true);
 
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-    formData.append("cv", file);
-    formData.append("access_key", "c68e1aef-fbfe-4e17-8efc-f1c581fdfe60");
-    formData.append("subject", "Nuevo CV en Persona");
-    formData.append("from_name", "Persona - Profesionales");
-
     try {
+      // 1. Subir CV a Lovable Cloud storage
+      const ext = file.name.split(".").pop();
+      const path = `${crypto.randomUUID()}.${ext}`;
+      const { error: uploadError } = await supabase.storage
+        .from("cvs")
+        .upload(path, file, { contentType: file.type, upsert: false });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage.from("cvs").getPublicUrl(path);
+
+      // 2. Enviar datos del form + link al CV a Web3Forms
+      const form = e.target as HTMLFormElement;
+      const formData = new FormData(form);
+      formData.append("cv_url", publicUrl);
+      formData.append("cv_filename", file.name);
+      formData.append("access_key", "c68e1aef-fbfe-4e17-8efc-f1c581fdfe60");
+      formData.append("subject", "Nuevo CV en Persona");
+      formData.append("from_name", "Persona - Profesionales");
+
       const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         body: formData,
@@ -58,7 +72,8 @@ export function CVUpload() {
       } else {
         alert("Hubo un error enviando tu perfil. Inténtalo de nuevo.");
       }
-    } catch {
+    } catch (err) {
+      console.error(err);
       alert("Hubo un error enviando tu perfil. Inténtalo de nuevo.");
     } finally {
       setSending(false);
