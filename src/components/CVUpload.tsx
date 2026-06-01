@@ -1,5 +1,6 @@
 import { useState, useRef, type ChangeEvent, type DragEvent, type FormEvent } from "react";
 import { Upload, FileText, CheckCircle2, X } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export function CVUpload() {
   const [file, setFile] = useState<File | null>(null);
