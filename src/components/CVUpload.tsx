@@ -51,7 +51,11 @@ export function CVUpload() {
 
       if (uploadError) throw uploadError;
 
-      const { data: { publicUrl } } = supabase.storage.from("cvs").getPublicUrl(path);
+      const { data: signed, error: signedError } = await supabase.storage
+        .from("cvs")
+        .createSignedUrl(path, 60 * 60 * 24 * 365);
+      if (signedError || !signed) throw signedError ?? new Error("No signed URL");
+      const publicUrl = signed.signedUrl;
 
       // 2. Enviar datos del form + link al CV a Web3Forms
       const form = e.target as HTMLFormElement;
