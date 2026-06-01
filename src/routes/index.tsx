@@ -78,10 +78,20 @@ function Index() {
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
             {stats.map((s) => {
-              const isEmoji = /\p{Extended_Pictographic}/u.test(s.v);
+              const isFlag = s.v === "🇻🇪";
               return (
                 <div key={s.l} className="glass-strong rounded-2xl p-8 text-center hover:-translate-y-1 transition-transform">
-                  <div className={`text-5xl md:text-6xl font-bold mb-3 ${isEmoji ? "" : "text-gradient"}`}>{s.v}</div>
+                  {isFlag ? (
+                    <div className="mb-3 flex justify-center">
+                      <img
+                        src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f1fb-1f1ea.svg"
+                        alt="Bandera de Venezuela"
+                        className="h-14 md:h-16 w-auto"
+                      />
+                    </div>
+                  ) : (
+                    <div className="text-5xl md:text-6xl font-bold text-gradient mb-3">{s.v}</div>
+                  )}
                   <div className="text-sm text-muted-foreground font-medium">{s.l}</div>
                 </div>
               );
