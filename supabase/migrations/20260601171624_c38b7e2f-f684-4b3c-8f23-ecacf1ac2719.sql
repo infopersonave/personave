@@ -1,0 +1,1 @@
+drop policy if exists "Public can read CVs" on storage.objects;
