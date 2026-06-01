@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useState, type FormEvent } from "react";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { CheckCircle2 } from "lucide-react";
+import { submitDemo } from "@/lib/forms.functions";
 
 export const Route = createFileRoute("/empresas")({
   head: () => ({
@@ -114,26 +116,16 @@ function Empresas() {
 function DemoForm() {
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
+  const submit = useServerFn(submitDemo);
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setSending(true);
     const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-    formData.append('access_key', 'c68e1aef-fbfe-4e17-8efc-f1c581fdfe60');
-    formData.append('subject', 'Nueva solicitud de demo - Persona Empresas');
-    formData.append('from_name', 'Persona - Empresas');
     try {
-      const res = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await res.json();
-      if (data.success) {
-        setSent(true);
-      } else {
-        alert('Hubo un error enviando tu solicitud. Inténtalo de nuevo.');
-      }
-    } catch {
+      await submit({ data: new FormData(form) });
+      setSent(true);
+    } catch (err) {
+      console.error(err);
       alert('Hubo un error enviando tu solicitud. Inténtalo de nuevo.');
     } finally {
       setSending(false);

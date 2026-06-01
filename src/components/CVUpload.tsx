@@ -1,6 +1,7 @@
 import { useState, useRef, type ChangeEvent, type DragEvent, type FormEvent } from "react";
 import { Upload, FileText, CheckCircle2, X } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { submitCV } from "@/lib/forms.functions";
 
 export function CVUpload() {
   const [file, setFile] = useState<File | null>(null);
@@ -36,46 +37,19 @@ export function CVUpload() {
     if (f) handleFile(f);
   };
 
+  const submit = useServerFn(submitCV);
+
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!file) return;
     setSending(true);
 
     try {
-      // 1. Subir CV a Lovable Cloud storage
-      const ext = file.name.split(".").pop();
-      const path = `${crypto.randomUUID()}.${ext}`;
-      const { error: uploadError } = await supabase.storage
-        .from("cvs")
-        .upload(path, file, { contentType: file.type, upsert: false });
-
-      if (uploadError) throw uploadError;
-
-      const { data: signed, error: signedError } = await supabase.storage
-        .from("cvs")
-        .createSignedUrl(path, 60 * 60 * 24 * 365);
-      if (signedError || !signed) throw signedError ?? new Error("No signed URL");
-      const publicUrl = signed.signedUrl;
-
-      // 2. Enviar datos del form + link al CV a Web3Forms
       const form = e.target as HTMLFormElement;
       const formData = new FormData(form);
-      formData.append("cv_url", publicUrl);
-      formData.append("cv_filename", file.name);
-      formData.append("access_key", "c68e1aef-fbfe-4e17-8efc-f1c581fdfe60");
-      formData.append("subject", "Nuevo CV en Persona");
-      formData.append("from_name", "Persona - Profesionales");
-
-      const res = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
-      if (data.success) {
-        setSubmitted(true);
-      } else {
-        alert("Hubo un error enviando tu perfil. Inténtalo de nuevo.");
-      }
+      formData.set("cv", file);
+      await submit({ data: formData });
+      setSubmitted(true);
     } catch (err) {
       console.error(err);
       alert("Hubo un error enviando tu perfil. Inténtalo de nuevo.");
