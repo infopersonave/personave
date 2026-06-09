@@ -25,8 +25,15 @@ export const submitCV = createServerFn({ method: "POST" })
   })
   .handler(async ({ data }) => {
     const { uploadCVAndSign, submitWeb3Forms } = await import("./forms.server");
-    const signedUrl = await uploadCVAndSign(data.file, data.ext);
-    await submitWeb3Forms({
+    const signedUrl = await uploadCVAndSign(data.file, data.ext, {
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      linkedin: data.linkedin,
+      oportunidades: data.oportunidades,
+    });
+    try {
+      await submitWeb3Forms({
       subject: "Nuevo CV en Persona",
       from_name: "Persona - Profesionales",
       name: data.name,
@@ -36,7 +43,10 @@ export const submitCV = createServerFn({ method: "POST" })
       oportunidades: data.oportunidades,
       cv_url: signedUrl,
       cv_filename: data.file.name,
-    });
+      });
+    } catch (error) {
+      console.warn("CV stored, but notification failed", error);
+    }
     return { success: true };
   });
 
