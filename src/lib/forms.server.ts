@@ -11,8 +11,18 @@ export async function submitWeb3Forms(fields: Record<string, string>) {
   const fd = new FormData();
   fd.append("access_key", key);
   for (const [k, v] of Object.entries(fields)) fd.append(k, v);
-  const res = await fetch(WEB3FORMS_URL, { method: "POST", body: fd });
-  const data = (await res.json()) as { success?: boolean; message?: string };
+  const res = await fetch(WEB3FORMS_URL, {
+    method: "POST",
+    headers: { Accept: "application/json" },
+    body: fd,
+  });
+  const text = await res.text();
+  let data: { success?: boolean; message?: string };
+  try {
+    data = JSON.parse(text) as { success?: boolean; message?: string };
+  } catch {
+    throw new Error(`Web3Forms returned ${res.status}: ${text.slice(0, 120)}`);
+  }
   if (!data.success) throw new Error(data.message || "Web3Forms submission failed");
 }
 
