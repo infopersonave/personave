@@ -3,6 +3,8 @@ import { Upload, FileText, CheckCircle2, X } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { submitCV } from "@/lib/forms.functions";
 
+const CV_WEB3FORMS_ACCESS_KEY = "148c465d-a9d5-4344-8999-d3bec14267a6";
+
 export function CVUpload() {
   const [file, setFile] = useState<File | null>(null);
   const [dragging, setDragging] = useState(false);
@@ -48,7 +50,24 @@ export function CVUpload() {
       const form = e.target as HTMLFormElement;
       const formData = new FormData(form);
       formData.set("cv", file);
-      await submit({ data: formData });
+      const result = await submit({ data: formData });
+
+      await submitCVNotification(
+        {
+          access_key: CV_WEB3FORMS_ACCESS_KEY,
+          subject: "Nuevo CV en Persona",
+          from_name: "Persona - Profesionales",
+          name: String(formData.get("name") ?? ""),
+          email: String(formData.get("email") ?? ""),
+          phone: String(formData.get("phone") ?? ""),
+          linkedin: String(formData.get("linkedin") ?? ""),
+          oportunidades: String(formData.get("oportunidades") ?? ""),
+          cv_url: result.signedUrl,
+          cv_filename: result.filename,
+        },
+        file,
+      );
+
       setSubmitted(true);
     } catch (err) {
       console.error(err);
@@ -133,6 +152,61 @@ export function CVUpload() {
       </form>
     </div>
   );
+}
+
+function submitCVNotification(fields: Record<string, string>, attachment: File) {
+  return new Promise<void>((resolve, reject) => {
+    const id = `web3forms-cv-${Date.now()}`;
+    const iframe = document.createElement("iframe");
+    iframe.name = id;
+    iframe.style.display = "none";
+
+    const notificationForm = document.createElement("form");
+    notificationForm.action = "https://api.web3forms.com/submit";
+    notificationForm.method = "POST";
+    notificationForm.enctype = "multipart/form-data";
+    notificationForm.target = id;
+    notificationForm.style.display = "none";
+
+    for (const [name, value] of Object.entries(fields)) {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = name;
+      input.value = value;
+      notificationForm.appendChild(input);
+    }
+
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.name = "attachment";
+    const transfer = new DataTransfer();
+    transfer.items.add(attachment);
+    fileInput.files = transfer.files;
+    notificationForm.appendChild(fileInput);
+
+    let settled = false;
+    const cleanup = () => {
+      window.clearTimeout(timeout);
+      notificationForm.remove();
+      iframe.remove();
+    };
+    const timeout = window.setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      reject(new Error("No se pudo confirmar el envío del CV"));
+    }, 20000);
+
+    iframe.addEventListener("load", () => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      resolve();
+    });
+
+    document.body.append(iframe, notificationForm);
+    notificationForm.submit();
+  });
 }
 
 function Input({ label, ...props }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {

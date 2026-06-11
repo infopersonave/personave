@@ -5,12 +5,20 @@ const WEB3FORMS_URL = "https://api.web3forms.com/submit";
 export const MAX_CV_BYTES = 10 * 1024 * 1024;
 export const ALLOWED_EXTS = ["pdf", "doc", "docx"];
 
-export async function submitWeb3Forms(fields: Record<string, string>, accessKey?: string) {
+type Web3FormsAttachment = {
+  name: string;
+  file: File;
+};
+
+export async function submitWeb3Forms(fields: Record<string, string>, accessKey?: string, attachments: Web3FormsAttachment[] = []) {
   const key = accessKey ?? process.env.WEB3FORMS_ACCESS_KEY;
   if (!key) throw new Error("WEB3FORMS_ACCESS_KEY not configured");
   const fd = new FormData();
   fd.append("access_key", key);
   for (const [k, v] of Object.entries(fields)) fd.append(k, v);
+  for (const attachment of attachments) {
+    fd.append(attachment.name, attachment.file, attachment.file.name);
+  }
   const res = await fetch(WEB3FORMS_URL, {
     method: "POST",
     headers: { Accept: "application/json" },
