@@ -32,21 +32,21 @@ export const submitCV = createServerFn({ method: "POST" })
       linkedin: data.linkedin,
       oportunidades: data.oportunidades,
     });
-    try {
-      await submitWeb3Forms({
-      subject: "Nuevo CV en Persona",
-      from_name: "Persona - Profesionales",
-      name: data.name,
-      email: data.email,
-      phone: data.phone,
-      linkedin: data.linkedin,
-      oportunidades: data.oportunidades,
-      cv_url: signedUrl,
-      cv_filename: data.file.name,
-      }, "148c465d-a9d5-4344-8999-d3bec14267a6");
-    } catch (error) {
-      console.warn("CV stored, but notification failed", error);
-    }
+    await submitWeb3Forms(
+      {
+        subject: "Nuevo CV en Persona",
+        from_name: "Persona - Profesionales",
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        linkedin: data.linkedin,
+        oportunidades: data.oportunidades,
+        cv_url: signedUrl,
+        cv_filename: data.file.name,
+      },
+      "148c465d-a9d5-4344-8999-d3bec14267a6",
+      [{ name: "attachment", file: data.file }],
+    );
     return { success: true };
   });
 
