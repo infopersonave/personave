@@ -43,7 +43,7 @@ export const submitCV = createServerFn({ method: "POST" })
       oportunidades: data.oportunidades,
       cv_url: signedUrl,
       cv_filename: data.file.name,
-      });
+      }, "148c465d-a9d5-4344-8999-d3bec14267a6");
     } catch (error) {
       console.warn("CV stored, but notification failed", error);
     }
