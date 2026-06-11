@@ -3,6 +3,8 @@ import { Upload, FileText, CheckCircle2, X } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { submitCV } from "@/lib/forms.functions";
 
+const CV_WEB3FORMS_ACCESS_KEY = "148c465d-a9d5-4344-8999-d3bec14267a6";
+
 export function CVUpload() {
   const [file, setFile] = useState<File | null>(null);
   const [dragging, setDragging] = useState(false);
@@ -48,7 +50,27 @@ export function CVUpload() {
       const form = e.target as HTMLFormElement;
       const formData = new FormData(form);
       formData.set("cv", file);
-      await submit({ data: formData });
+      const result = await submit({ data: formData });
+
+      const web3FormsData = new FormData(form);
+      web3FormsData.set("access_key", CV_WEB3FORMS_ACCESS_KEY);
+      web3FormsData.set("subject", "Nuevo CV en Persona");
+      web3FormsData.set("from_name", "Persona - Profesionales");
+      web3FormsData.set("cv_url", result.signedUrl);
+      web3FormsData.set("cv_filename", result.filename);
+      web3FormsData.set("attachment", file, file.name);
+
+      const notification = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: web3FormsData,
+      });
+      const notificationText = await notification.text();
+      const notificationData = JSON.parse(notificationText) as { success?: boolean; message?: string };
+      if (!notification.ok || !notificationData.success) {
+        throw new Error(notificationData.message || "Web3Forms notification failed");
+      }
+
       setSubmitted(true);
     } catch (err) {
       console.error(err);

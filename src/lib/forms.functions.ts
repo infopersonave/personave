@@ -24,7 +24,7 @@ export const submitCV = createServerFn({ method: "POST" })
     };
   })
   .handler(async ({ data }) => {
-    const { uploadCVAndSign, submitWeb3Forms } = await import("./forms.server");
+    const { uploadCVAndSign } = await import("./forms.server");
     const signedUrl = await uploadCVAndSign(data.file, data.ext, {
       name: data.name,
       email: data.email,
@@ -32,22 +32,7 @@ export const submitCV = createServerFn({ method: "POST" })
       linkedin: data.linkedin,
       oportunidades: data.oportunidades,
     });
-    await submitWeb3Forms(
-      {
-        subject: "Nuevo CV en Persona",
-        from_name: "Persona - Profesionales",
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        linkedin: data.linkedin,
-        oportunidades: data.oportunidades,
-        cv_url: signedUrl,
-        cv_filename: data.file.name,
-      },
-      "148c465d-a9d5-4344-8999-d3bec14267a6",
-      [{ name: "attachment", file: data.file }],
-    );
-    return { success: true };
+    return { success: true, signedUrl, filename: data.file.name };
   });
 
 export const submitDemo = createServerFn({ method: "POST" })
