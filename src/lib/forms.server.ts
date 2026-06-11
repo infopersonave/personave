@@ -5,8 +5,8 @@ const WEB3FORMS_URL = "https://api.web3forms.com/submit";
 export const MAX_CV_BYTES = 10 * 1024 * 1024;
 export const ALLOWED_EXTS = ["pdf", "doc", "docx"];
 
-export async function submitWeb3Forms(fields: Record<string, string>) {
-  const key = process.env.WEB3FORMS_ACCESS_KEY;
+export async function submitWeb3Forms(fields: Record<string, string>, accessKey?: string) {
+  const key = accessKey ?? process.env.WEB3FORMS_ACCESS_KEY;
   if (!key) throw new Error("WEB3FORMS_ACCESS_KEY not configured");
   const fd = new FormData();
   fd.append("access_key", key);
