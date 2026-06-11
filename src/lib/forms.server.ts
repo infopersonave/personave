@@ -17,11 +17,14 @@ export async function submitWeb3Forms(fields: Record<string, string>, accessKey?
     body: fd,
   });
   const text = await res.text();
-  let data: { success?: boolean; message?: string };
+  let data: { success?: boolean; message?: string } | null = null;
   try {
     data = JSON.parse(text) as { success?: boolean; message?: string };
   } catch {
-    throw new Error(`Web3Forms returned ${res.status}: ${text.slice(0, 120)}`);
+    // Web3Forms sometimes responds with an HTML success page instead of JSON.
+    // Treat any 2xx as success when the body isn't JSON.
+    if (!res.ok) throw new Error(`Web3Forms returned ${res.status}`);
+    return;
   }
   if (!data.success) throw new Error(data.message || "Web3Forms submission failed");
 }
