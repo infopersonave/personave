@@ -52,24 +52,21 @@ export function CVUpload() {
       formData.set("cv", file);
       const result = await submit({ data: formData });
 
-      const web3FormsData = new FormData(form);
-      web3FormsData.set("access_key", CV_WEB3FORMS_ACCESS_KEY);
-      web3FormsData.set("subject", "Nuevo CV en Persona");
-      web3FormsData.set("from_name", "Persona - Profesionales");
-      web3FormsData.set("cv_url", result.signedUrl);
-      web3FormsData.set("cv_filename", result.filename);
-      web3FormsData.set("attachment", file, file.name);
-
-      const notification = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: { Accept: "application/json" },
-        body: web3FormsData,
-      });
-      const notificationText = await notification.text();
-      const notificationData = JSON.parse(notificationText) as { success?: boolean; message?: string };
-      if (!notification.ok || !notificationData.success) {
-        throw new Error(notificationData.message || "Web3Forms notification failed");
-      }
+      await submitCVNotification(
+        {
+          access_key: CV_WEB3FORMS_ACCESS_KEY,
+          subject: "Nuevo CV en Persona",
+          from_name: "Persona - Profesionales",
+          name: String(formData.get("name") ?? ""),
+          email: String(formData.get("email") ?? ""),
+          phone: String(formData.get("phone") ?? ""),
+          linkedin: String(formData.get("linkedin") ?? ""),
+          oportunidades: String(formData.get("oportunidades") ?? ""),
+          cv_url: result.signedUrl,
+          cv_filename: result.filename,
+        },
+        file,
+      );
 
       setSubmitted(true);
     } catch (err) {
@@ -155,6 +152,61 @@ export function CVUpload() {
       </form>
     </div>
   );
+}
+
+function submitCVNotification(fields: Record<string, string>, attachment: File) {
+  return new Promise<void>((resolve, reject) => {
+    const id = `web3forms-cv-${Date.now()}`;
+    const iframe = document.createElement("iframe");
+    iframe.name = id;
+    iframe.style.display = "none";
+
+    const notificationForm = document.createElement("form");
+    notificationForm.action = "https://api.web3forms.com/submit";
+    notificationForm.method = "POST";
+    notificationForm.enctype = "multipart/form-data";
+    notificationForm.target = id;
+    notificationForm.style.display = "none";
+
+    for (const [name, value] of Object.entries(fields)) {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = name;
+      input.value = value;
+      notificationForm.appendChild(input);
+    }
+
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.name = "attachment";
+    const transfer = new DataTransfer();
+    transfer.items.add(attachment);
+    fileInput.files = transfer.files;
+    notificationForm.appendChild(fileInput);
+
+    let settled = false;
+    const cleanup = () => {
+      window.clearTimeout(timeout);
+      notificationForm.remove();
+      iframe.remove();
+    };
+    const timeout = window.setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      reject(new Error("No se pudo confirmar el envío del CV"));
+    }, 20000);
+
+    iframe.addEventListener("load", () => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      resolve();
+    });
+
+    document.body.append(iframe, notificationForm);
+    notificationForm.submit();
+  });
 }
 
 function Input({ label, ...props }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
