@@ -48,10 +48,6 @@ function Index() {
       <section id="hero" className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-mesh">
         <div className="mx-auto max-w-7xl px-6 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div className="animate-fade-up">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-brand-soft border border-primary/20 text-sm font-medium mb-6">
-              <span className="w-2 h-2 rounded-full bg-gradient-brand animate-pulse" />
-              En fase de lanzamiento
-            </div>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05]">
               <span className="text-gradient">La nueva red de talento</span> en Venezuela
             </h1>
@@ -73,9 +69,6 @@ function Index() {
       {/* STATS */}
       <section className="py-20 bg-bg-light">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold">En fase de lanzamiento</h2>
-          </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
             {stats.map((s) => {
               const isFlag = s.v === "🇻🇪";
