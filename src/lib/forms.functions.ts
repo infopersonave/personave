@@ -8,7 +8,7 @@ export const submitCV = createServerFn({ method: "POST" })
     const file = data.get("cv");
     if (!(file instanceof File)) throw new Error("CV file is required");
     if (file.size === 0) throw new Error("Empty file");
-    if (file.size > 10 * 1024 * 1024) throw new Error("File exceeds 10MB");
+    if (file.size > 5 * 1024 * 1024) throw new Error("File exceeds 5MB (Web3Forms limit)");
     const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
     if (!["pdf", "doc", "docx"].includes(ext)) throw new Error("Invalid file type");
     const name = String(data.get("name") ?? "").trim().slice(0, 200);
