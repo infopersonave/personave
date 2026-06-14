@@ -1,7 +1,7 @@
 import { useState, useRef, type ChangeEvent, type DragEvent, type FormEvent } from "react";
 import { Upload, FileText, CheckCircle2, X } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
-import { submitCV } from "@/lib/forms.functions";
+import { submitCV, submitCVToMake } from "@/lib/forms.functions";
 
 const CV_WEB3FORMS_ACCESS_KEY = "148c465d-a9d5-4344-8999-d3bec14267a6";
 
@@ -40,6 +40,7 @@ export function CVUpload() {
   };
 
   const submit = useServerFn(submitCV);
+  const submitMake = useServerFn(submitCVToMake);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -50,7 +51,6 @@ export function CVUpload() {
       const form = e.target as HTMLFormElement;
       const formData = new FormData(form);
       formData.set("cv", file);
-      const result = await submit({ data: formData });
 
       const fields = {
         name: String(formData.get("name") ?? ""),
@@ -58,21 +58,31 @@ export function CVUpload() {
         phone: String(formData.get("phone") ?? ""),
         linkedin: String(formData.get("linkedin") ?? ""),
         oportunidades: String(formData.get("oportunidades") ?? ""),
-        cv_url: result.signedUrl,
-        cv_filename: result.filename,
+        cv_filename: file.name,
+        cv_type: file.type || "application/octet-stream",
+        cv_size: String(file.size),
       };
 
-      // Fire-and-forget copy to Make webhook (no debe bloquear ni romper el envío)
-      try {
-        void fetch("https://hook.us2.make.com/5hbzwu0mqd0r35vebv13lmtkqkhvgqdj", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(fields),
-          keepalive: true,
-        }).catch(() => {});
-      } catch {
-        // silenciar
-      }
+      const storedCVPromise = submit({ data: formData }).catch(() => null);
+
+      void (async () => {
+        try {
+          const [storedCV, cv_base64] = await Promise.all([
+            storedCVPromise,
+            fileToDataUrl(file).catch(() => ""),
+          ]);
+
+          await submitMake({
+            data: {
+              ...fields,
+              cv_url: storedCV?.signedUrl ?? "",
+              cv_base64,
+            },
+          });
+        } catch {
+          // Make es una copia secundaria: debe fallar en silencio.
+        }
+      })();
 
       await submitCVNotification(
         {
