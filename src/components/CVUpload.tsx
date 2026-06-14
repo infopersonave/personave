@@ -18,8 +18,8 @@ export function CVUpload() {
       alert("Solo PDF o Word (.pdf, .doc, .docx)");
       return;
     }
-    if (f.size > 10 * 1024 * 1024) {
-      alert("Máximo 10MB");
+    if (f.size > 5 * 1024 * 1024) {
+      alert("Máximo 5MB");
       return;
     }
     setFile(f);
