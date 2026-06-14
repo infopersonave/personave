@@ -1,7 +1,7 @@
 import { useState, useRef, type ChangeEvent, type DragEvent, type FormEvent } from "react";
 import { Upload, FileText, CheckCircle2, X } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
-import { submitCV } from "@/lib/forms.functions";
+import { submitCV, submitCVToMake } from "@/lib/forms.functions";
 
 const CV_WEB3FORMS_ACCESS_KEY = "148c465d-a9d5-4344-8999-d3bec14267a6";
 
@@ -40,6 +40,7 @@ export function CVUpload() {
   };
 
   const submit = useServerFn(submitCV);
+  const submitMake = useServerFn(submitCVToMake);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -50,7 +51,6 @@ export function CVUpload() {
       const form = e.target as HTMLFormElement;
       const formData = new FormData(form);
       formData.set("cv", file);
-      const result = await submit({ data: formData });
 
       const fields = {
         name: String(formData.get("name") ?? ""),
@@ -58,21 +58,31 @@ export function CVUpload() {
         phone: String(formData.get("phone") ?? ""),
         linkedin: String(formData.get("linkedin") ?? ""),
         oportunidades: String(formData.get("oportunidades") ?? ""),
-        cv_url: result.signedUrl,
-        cv_filename: result.filename,
+        cv_filename: file.name,
+        cv_type: file.type || "application/octet-stream",
+        cv_size: String(file.size),
       };
 
-      // Fire-and-forget copy to Make webhook (no debe bloquear ni romper el envío)
-      try {
-        void fetch("https://hook.us2.make.com/5hbzwu0mqd0r35vebv13lmtkqkhvgqdj", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(fields),
-          keepalive: true,
-        }).catch(() => {});
-      } catch {
-        // silenciar
-      }
+      const storedCVPromise = submit({ data: formData }).catch(() => null);
+
+      void (async () => {
+        try {
+          const [storedCV, cv_base64] = await Promise.all([
+            storedCVPromise,
+            fileToDataUrl(file).catch(() => ""),
+          ]);
+
+          await submitMake({
+            data: {
+              ...fields,
+              cv_url: storedCV?.signedUrl ?? "",
+              cv_base64,
+            },
+          });
+        } catch {
+          // Make es una copia secundaria: debe fallar en silencio.
+        }
+      })();
 
       await submitCVNotification(
         {
@@ -171,57 +181,25 @@ export function CVUpload() {
 }
 
 function submitCVNotification(fields: Record<string, string>, attachment: File) {
-  return new Promise<void>((resolve, reject) => {
-    const id = `web3forms-cv-${Date.now()}`;
-    const iframe = document.createElement("iframe");
-    iframe.name = id;
-    iframe.style.display = "none";
+  const formData = new FormData();
+  for (const [name, value] of Object.entries(fields)) {
+    formData.append(name, value);
+  }
+  formData.append("attachment", attachment, attachment.name);
 
-    const notificationForm = document.createElement("form");
-    notificationForm.action = "https://api.web3forms.com/submit";
-    notificationForm.method = "POST";
-    notificationForm.enctype = "multipart/form-data";
-    notificationForm.target = id;
-    notificationForm.style.display = "none";
+  return fetch("https://api.web3forms.com/submit", {
+    method: "POST",
+    mode: "no-cors",
+    body: formData,
+  });
+}
 
-    for (const [name, value] of Object.entries(fields)) {
-      const input = document.createElement("input");
-      input.type = "hidden";
-      input.name = name;
-      input.value = value;
-      notificationForm.appendChild(input);
-    }
-
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.name = "attachment";
-    const transfer = new DataTransfer();
-    transfer.items.add(attachment);
-    fileInput.files = transfer.files;
-    notificationForm.appendChild(fileInput);
-
-    let settled = false;
-    const cleanup = () => {
-      window.clearTimeout(timeout);
-      notificationForm.remove();
-      iframe.remove();
-    };
-    const timeout = window.setTimeout(() => {
-      if (settled) return;
-      settled = true;
-      cleanup();
-      reject(new Error("No se pudo confirmar el envío del CV"));
-    }, 20000);
-
-    iframe.addEventListener("load", () => {
-      if (settled) return;
-      settled = true;
-      cleanup();
-      resolve();
-    });
-
-    document.body.append(iframe, notificationForm);
-    notificationForm.submit();
+function fileToDataUrl(file: File) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : "");
+    reader.onerror = () => reject(reader.error ?? new Error("No se pudo leer el CV"));
+    reader.readAsDataURL(file);
   });
 }
 

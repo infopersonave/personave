@@ -1,5 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 
+const MAKE_CV_WEBHOOK_URL = "https://hook.us2.make.com/5hbzwu0mqd0r35vebv13lmtkqkhvgqdj";
+
 export const submitCV = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => {
     if (!(data instanceof FormData)) throw new Error("Expected FormData");
@@ -33,6 +35,37 @@ export const submitCV = createServerFn({ method: "POST" })
       oportunidades: data.oportunidades,
     });
     return { success: true, signedUrl, filename: data.file.name };
+  });
+
+export const submitCVToMake = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => {
+    if (!data || typeof data !== "object" || Array.isArray(data)) {
+      throw new Error("Expected JSON object");
+    }
+
+    const out: Record<string, string> = {};
+    for (const [key, value] of Object.entries(data as Record<string, unknown>)) {
+      if (typeof value === "string") out[key] = value.slice(0, 8_000_000);
+    }
+
+    if (!out.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(out.email)) {
+      throw new Error("Invalid email");
+    }
+
+    return out;
+  })
+  .handler(async ({ data }) => {
+    try {
+      await fetch(MAKE_CV_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+    } catch {
+      // Make es una copia secundaria: debe fallar en silencio.
+    }
+
+    return { success: true };
   });
 
 export const submitDemo = createServerFn({ method: "POST" })
