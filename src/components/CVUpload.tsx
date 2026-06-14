@@ -211,6 +211,7 @@ function submitCVNotification(fields: Record<string, string>, attachment: File) 
     notificationForm.appendChild(fileInput);
 
     let settled = false;
+    let submittedNativeForm = false;
     const cleanup = () => {
       window.clearTimeout(timeout);
       notificationForm.remove();
@@ -224,6 +225,7 @@ function submitCVNotification(fields: Record<string, string>, attachment: File) 
     }, 20000);
 
     iframe.addEventListener("load", () => {
+      if (!submittedNativeForm) return;
       if (settled) return;
       settled = true;
       cleanup();
@@ -231,7 +233,10 @@ function submitCVNotification(fields: Record<string, string>, attachment: File) 
     });
 
     document.body.append(iframe, notificationForm);
-    notificationForm.submit();
+    window.setTimeout(() => {
+      submittedNativeForm = true;
+      notificationForm.submit();
+    }, 0);
   });
 }
 
