@@ -235,6 +235,15 @@ function submitCVNotification(fields: Record<string, string>, attachment: File) 
   });
 }
 
+function fileToDataUrl(file: File) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : "");
+    reader.onerror = () => reject(reader.error ?? new Error("No se pudo leer el CV"));
+    reader.readAsDataURL(file);
+  });
+}
+
 function Input({ label, ...props }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div>
