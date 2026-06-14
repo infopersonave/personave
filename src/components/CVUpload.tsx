@@ -1,9 +1,7 @@
 import { useState, useRef, type ChangeEvent, type DragEvent, type FormEvent } from "react";
 import { Upload, FileText, CheckCircle2, X } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
-import { submitCV, submitCVToMake } from "@/lib/forms.functions";
-
-const CV_WEB3FORMS_ACCESS_KEY = "148c465d-a9d5-4344-8999-d3bec14267a6";
+import { submitCV } from "@/lib/forms.functions";
 
 export function CVUpload() {
   const [file, setFile] = useState<File | null>(null);
@@ -40,8 +38,6 @@ export function CVUpload() {
   };
 
   const submit = useServerFn(submitCV);
-  const submitMake = useServerFn(submitCVToMake);
-
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!file) return;
@@ -52,47 +48,7 @@ export function CVUpload() {
       const formData = new FormData(form);
       formData.set("cv", file);
 
-      const fields = {
-        name: String(formData.get("name") ?? ""),
-        email: String(formData.get("email") ?? ""),
-        phone: String(formData.get("phone") ?? ""),
-        linkedin: String(formData.get("linkedin") ?? ""),
-        oportunidades: String(formData.get("oportunidades") ?? ""),
-        cv_filename: file.name,
-        cv_type: file.type || "application/octet-stream",
-        cv_size: String(file.size),
-      };
-
-      const storedCVPromise = submit({ data: formData }).catch(() => null);
-
-      void (async () => {
-        try {
-          const [storedCV, cv_base64] = await Promise.all([
-            storedCVPromise,
-            fileToDataUrl(file).catch(() => ""),
-          ]);
-
-          await submitMake({
-            data: {
-              ...fields,
-              cv_url: storedCV?.signedUrl ?? "",
-              cv_base64,
-            },
-          });
-        } catch {
-          // Make es una copia secundaria: debe fallar en silencio.
-        }
-      })();
-
-      await submitCVNotification(
-        {
-          access_key: CV_WEB3FORMS_ACCESS_KEY,
-          subject: "Nuevo CV en Persona",
-          from_name: "Persona - Profesionales",
-          ...fields,
-        },
-        file,
-      );
+      await submit({ data: formData });
 
       setSubmitted(true);
     } catch (err) {
@@ -178,29 +134,6 @@ export function CVUpload() {
       </form>
     </div>
   );
-}
-
-function submitCVNotification(fields: Record<string, string>, attachment: File) {
-  const formData = new FormData();
-  for (const [name, value] of Object.entries(fields)) {
-    formData.append(name, value);
-  }
-  formData.append("attachment", attachment, attachment.name);
-
-  return fetch("https://api.web3forms.com/submit", {
-    method: "POST",
-    mode: "no-cors",
-    body: formData,
-  });
-}
-
-function fileToDataUrl(file: File) {
-  return new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : "");
-    reader.onerror = () => reject(reader.error ?? new Error("No se pudo leer el CV"));
-    reader.readAsDataURL(file);
-  });
 }
 
 function Input({ label, ...props }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
