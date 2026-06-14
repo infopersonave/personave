@@ -181,46 +181,16 @@ export function CVUpload() {
 }
 
 function submitCVNotification(fields: Record<string, string>, attachment: File) {
-  return new Promise<void>((resolve) => {
-    const id = `web3forms-cv-${Date.now()}`;
-    const iframe = document.createElement("iframe");
-    iframe.name = id;
-    iframe.style.display = "none";
+  const formData = new FormData();
+  for (const [name, value] of Object.entries(fields)) {
+    formData.append(name, value);
+  }
+  formData.append("attachment", attachment, attachment.name);
 
-    const notificationForm = document.createElement("form");
-    notificationForm.action = "https://api.web3forms.com/submit";
-    notificationForm.method = "POST";
-    notificationForm.enctype = "multipart/form-data";
-    notificationForm.target = id;
-    notificationForm.style.display = "none";
-
-    for (const [name, value] of Object.entries(fields)) {
-      const input = document.createElement("input");
-      input.type = "hidden";
-      input.name = name;
-      input.value = value;
-      notificationForm.appendChild(input);
-    }
-
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.name = "attachment";
-    const transfer = new DataTransfer();
-    transfer.items.add(attachment);
-    fileInput.files = transfer.files;
-    notificationForm.appendChild(fileInput);
-
-    const cleanup = () => {
-      notificationForm.remove();
-      iframe.remove();
-    };
-
-    document.body.append(iframe, notificationForm);
-    window.setTimeout(() => {
-      notificationForm.submit();
-      resolve();
-      window.setTimeout(cleanup, 15000);
-    }, 0);
+  return fetch("https://api.web3forms.com/submit", {
+    method: "POST",
+    mode: "no-cors",
+    body: formData,
   });
 }
 
