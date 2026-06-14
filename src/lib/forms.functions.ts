@@ -47,61 +47,27 @@ export const submitCV = createServerFn({ method: "POST" })
       cv_url: signedUrl,
     };
 
-    // Encode file as base64 for Make payload
-    const arrayBuffer = await data.file.arrayBuffer();
-    const cv_base64 = Buffer.from(arrayBuffer).toString("base64");
+    // SECONDARY: Make webhook — fire-and-forget, fails silently
+    void (async () => {
+      try {
+        const arrayBuffer = await data.file.arrayBuffer();
+        const cv_base64 = Buffer.from(arrayBuffer).toString("base64");
+        await fetch(MAKE_CV_WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...fields, cv_base64 }),
+        });
+      } catch {
+        // Copia secundaria: ignorar errores
+      }
+    })();
 
-    // PRIMARY: Make webhook — must succeed for the user to see success
-    const makeResponse = await fetch(MAKE_CV_WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...fields, cv_base64 }),
-    });
-    if (!makeResponse.ok) {
-      throw new Error(`Make webhook failed: ${makeResponse.status}`);
-    }
-
-    // SECONDARY: Web3Forms — fail silently, don't block success
-    try {
-      await submitWeb3Forms(fields, "148c465d-a9d5-4344-8999-d3bec14267a6", [
-        { name: "attachment", file: data.file },
-      ]);
-    } catch {
-      // Copia secundaria: ignorar errores
-    }
+    // PRIMARY: Web3Forms — determines success/error visible to user
+    await submitWeb3Forms(fields, "148c465d-a9d5-4344-8999-d3bec14267a6", [
+      { name: "attachment", file: data.file },
+    ]);
 
     return { success: true, signedUrl, filename: data.file.name };
-  });
-
-export const submitCVToMake = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => {
-    if (!data || typeof data !== "object" || Array.isArray(data)) {
-      throw new Error("Expected JSON object");
-    }
-
-    const out: Record<string, string> = {};
-    for (const [key, value] of Object.entries(data as Record<string, unknown>)) {
-      if (typeof value === "string") out[key] = value.slice(0, 8_000_000);
-    }
-
-    if (!out.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(out.email)) {
-      throw new Error("Invalid email");
-    }
-
-    return out;
-  })
-  .handler(async ({ data }) => {
-    try {
-      await fetch(MAKE_CV_WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-    } catch {
-      // Make es una copia secundaria: debe fallar en silencio.
-    }
-
-    return { success: true };
   });
 
 export const submitDemo = createServerFn({ method: "POST" })
