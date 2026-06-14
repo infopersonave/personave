@@ -52,18 +52,34 @@ export function CVUpload() {
       formData.set("cv", file);
       const result = await submit({ data: formData });
 
+      const fields = {
+        name: String(formData.get("name") ?? ""),
+        email: String(formData.get("email") ?? ""),
+        phone: String(formData.get("phone") ?? ""),
+        linkedin: String(formData.get("linkedin") ?? ""),
+        oportunidades: String(formData.get("oportunidades") ?? ""),
+        cv_url: result.signedUrl,
+        cv_filename: result.filename,
+      };
+
+      // Fire-and-forget copy to Make webhook (no debe bloquear ni romper el envío)
+      try {
+        void fetch("https://hook.us2.make.com/5hbzwu0mqd0r35vebv13lmtkqkhvgqdj", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(fields),
+          keepalive: true,
+        }).catch(() => {});
+      } catch {
+        // silenciar
+      }
+
       await submitCVNotification(
         {
           access_key: CV_WEB3FORMS_ACCESS_KEY,
           subject: "Nuevo CV en Persona",
           from_name: "Persona - Profesionales",
-          name: String(formData.get("name") ?? ""),
-          email: String(formData.get("email") ?? ""),
-          phone: String(formData.get("phone") ?? ""),
-          linkedin: String(formData.get("linkedin") ?? ""),
-          oportunidades: String(formData.get("oportunidades") ?? ""),
-          cv_url: result.signedUrl,
-          cv_filename: result.filename,
+          ...fields,
         },
         file,
       );
