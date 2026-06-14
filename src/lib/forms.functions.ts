@@ -34,7 +34,8 @@ export const submitCV = createServerFn({ method: "POST" })
       linkedin: data.linkedin,
       oportunidades: data.oportunidades,
     };
-    const signedUrlPromise = uploadCVAndSign(data.file, data.ext, metadata).catch(() => "");
+
+    const signedUrl = await uploadCVAndSign(data.file, data.ext, metadata).catch(() => "");
 
     const fields = {
       subject: "Nuevo CV en Persona",
@@ -43,23 +44,31 @@ export const submitCV = createServerFn({ method: "POST" })
       cv_filename: data.file.name,
       cv_type: data.file.type || "application/octet-stream",
       cv_size: String(data.file.size),
+      cv_url: signedUrl,
     };
 
-    const web3FormsPromise = submitWeb3Forms({ ...fields, cv_url: "" }, "148c465d-a9d5-4344-8999-d3bec14267a6", [
+    // Encode file as base64 for Make payload
+    const arrayBuffer = await data.file.arrayBuffer();
+    const cv_base64 = Buffer.from(arrayBuffer).toString("base64");
+
+    // PRIMARY: Make webhook — must succeed for the user to see success
+    const makeResponse = await fetch(MAKE_CV_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...fields, cv_base64 }),
+    });
+    if (!makeResponse.ok) {
+      throw new Error(`Make webhook failed: ${makeResponse.status}`);
+    }
+
+    // SECONDARY: Web3Forms — fail silently, don't block success
+    try {
+      await submitWeb3Forms(fields, "148c465d-a9d5-4344-8999-d3bec14267a6", [
         { name: "attachment", file: data.file },
       ]);
-
-    const makePromise = signedUrlPromise
-      .then((signedUrl) => fetch(MAKE_CV_WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...fields, cv_url: signedUrl }),
-      }))
-      .catch(() => undefined);
-
-    await web3FormsPromise;
-    void makePromise;
-    const signedUrl = await signedUrlPromise;
+    } catch {
+      // Copia secundaria: ignorar errores
+    }
 
     return { success: true, signedUrl, filename: data.file.name };
   });
