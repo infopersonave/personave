@@ -181,7 +181,7 @@ export function CVUpload() {
 }
 
 function submitCVNotification(fields: Record<string, string>, attachment: File) {
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<void>((resolve) => {
     const id = `web3forms-cv-${Date.now()}`;
     const iframe = document.createElement("iframe");
     iframe.name = id;
@@ -210,32 +210,16 @@ function submitCVNotification(fields: Record<string, string>, attachment: File) 
     fileInput.files = transfer.files;
     notificationForm.appendChild(fileInput);
 
-    let settled = false;
-    let submittedNativeForm = false;
     const cleanup = () => {
-      window.clearTimeout(timeout);
       notificationForm.remove();
       iframe.remove();
     };
-    const timeout = window.setTimeout(() => {
-      if (settled) return;
-      settled = true;
-      cleanup();
-      reject(new Error("No se pudo confirmar el envío del CV"));
-    }, 20000);
-
-    iframe.addEventListener("load", () => {
-      if (!submittedNativeForm) return;
-      if (settled) return;
-      settled = true;
-      cleanup();
-      resolve();
-    });
 
     document.body.append(iframe, notificationForm);
     window.setTimeout(() => {
-      submittedNativeForm = true;
       notificationForm.submit();
+      resolve();
+      window.setTimeout(cleanup, 15000);
     }, 0);
   });
 }
