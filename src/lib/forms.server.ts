@@ -13,30 +13,47 @@ type Web3FormsAttachment = {
 export async function submitWeb3Forms(fields: Record<string, string>, accessKey?: string, attachments: Web3FormsAttachment[] = []) {
   const key = accessKey ?? process.env.WEB3FORMS_ACCESS_KEY;
   if (!key) throw new Error("WEB3FORMS_ACCESS_KEY not configured");
-  const fd = new FormData();
-  fd.append("access_key", key);
-  for (const [k, v] of Object.entries(fields)) fd.append(k, v);
-  for (const attachment of attachments) {
-    fd.append(attachment.name, attachment.file, attachment.file.name);
+
+  // If there are file attachments, send JSON with base64 (avoids multipart edge issues in Workers)
+  let res: Response;
+  if (attachments.length > 0) {
+    const attachmentPayloads = await Promise.all(
+      attachments.map(async (a) => {
+        const buf = await a.file.arrayBuffer();
+        const b64 = btoa(String.fromCharCode(...new Uint8Array(buf)));
+        return { name: a.file.name, data: b64 };
+      }),
+    );
+    const body = {
+      access_key: key,
+      ...fields,
+      attachments: attachmentPayloads,
+    };
+    res = await fetch(WEB3FORMS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify(body),
+    });
+  } else {
+    const fd = new FormData();
+    fd.append("access_key", key);
+    for (const [k, v] of Object.entries(fields)) fd.append(k, v);
+    res = await fetch(WEB3FORMS_URL, {
+      method: "POST",
+      headers: { Accept: "application/json" },
+      body: fd,
+    });
   }
-  const res = await fetch(WEB3FORMS_URL, {
-    method: "POST",
-    headers: { Accept: "application/json" },
-    body: fd,
-  });
+
   const text = await res.text();
+  console.log("[web3forms] response", { status: res.status, contentType: res.headers.get("content-type"), bodyPreview: text.slice(0, 300) });
   let data: { success?: boolean; message?: string } | null = null;
   try {
     data = JSON.parse(text) as { success?: boolean; message?: string };
   } catch {
-    if (!res.ok) {
-      console.error("[web3forms] non-JSON error", res.status, text.slice(0, 500));
-      throw new Error(`Web3Forms ${res.status}: ${text.slice(0, 200)}`);
-    }
-    return;
+    throw new Error(`Web3Forms ${res.status} (non-JSON): ${text.slice(0, 200)}`);
   }
   if (!res.ok || !data.success) {
-    console.error("[web3forms] error response", res.status, data);
     throw new Error(data.message || `Web3Forms submission failed (${res.status})`);
   }
 }
