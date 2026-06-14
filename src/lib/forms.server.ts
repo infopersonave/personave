@@ -10,6 +10,16 @@ type Web3FormsAttachment = {
   file: File;
 };
 
+function arrayBufferToBase64(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer);
+  let binary = "";
+  const chunkSize = 8192;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+  }
+  return btoa(binary);
+}
+
 export async function submitWeb3Forms(fields: Record<string, string>, accessKey?: string, attachments: Web3FormsAttachment[] = []) {
   const key = accessKey ?? process.env.WEB3FORMS_ACCESS_KEY;
   if (!key) throw new Error("WEB3FORMS_ACCESS_KEY not configured");
@@ -20,7 +30,7 @@ export async function submitWeb3Forms(fields: Record<string, string>, accessKey?
     const attachmentPayloads = await Promise.all(
       attachments.map(async (a) => {
         const buf = await a.file.arrayBuffer();
-        const b64 = btoa(String.fromCharCode(...new Uint8Array(buf)));
+        const b64 = arrayBufferToBase64(buf);
         return { name: a.file.name, data: b64 };
       }),
     );
