@@ -20,7 +20,7 @@ export async function submitWeb3Forms(fields: Record<string, string>, accessKey?
     const attachmentPayloads = await Promise.all(
       attachments.map(async (a) => {
         const buf = await a.file.arrayBuffer();
-        const b64 = btoa(String.fromCharCode(...new Uint8Array(buf)));
+        const b64 = arrayBufferToBase64(buf);
         return { name: a.file.name, data: b64 };
       }),
     );
