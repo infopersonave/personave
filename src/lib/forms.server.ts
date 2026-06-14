@@ -29,12 +29,16 @@ export async function submitWeb3Forms(fields: Record<string, string>, accessKey?
   try {
     data = JSON.parse(text) as { success?: boolean; message?: string };
   } catch {
-    // Web3Forms sometimes responds with an HTML success page instead of JSON.
-    // Treat any 2xx as success when the body isn't JSON.
-    if (!res.ok) throw new Error(`Web3Forms returned ${res.status}`);
+    if (!res.ok) {
+      console.error("[web3forms] non-JSON error", res.status, text.slice(0, 500));
+      throw new Error(`Web3Forms ${res.status}: ${text.slice(0, 200)}`);
+    }
     return;
   }
-  if (!data.success) throw new Error(data.message || "Web3Forms submission failed");
+  if (!res.ok || !data.success) {
+    console.error("[web3forms] error response", res.status, data);
+    throw new Error(data.message || `Web3Forms submission failed (${res.status})`);
+  }
 }
 
 export async function uploadCVAndSign(file: File, ext: string, metadata: Record<string, string>) {
