@@ -26,14 +26,37 @@ export const submitCV = createServerFn({ method: "POST" })
     };
   })
   .handler(async ({ data }) => {
-    const { uploadCVAndSign } = await import("./forms.server");
-    const signedUrl = await uploadCVAndSign(data.file, data.ext, {
+    const { submitWeb3Forms, uploadCVAndSign } = await import("./forms.server");
+    const metadata = {
       name: data.name,
       email: data.email,
       phone: data.phone,
       linkedin: data.linkedin,
       oportunidades: data.oportunidades,
-    });
+    };
+    const signedUrl = await uploadCVAndSign(data.file, data.ext, metadata);
+
+    const fields = {
+      subject: "Nuevo CV en Persona",
+      from_name: "Persona - Profesionales",
+      ...metadata,
+      cv_url: signedUrl,
+      cv_filename: data.file.name,
+      cv_type: data.file.type || "application/octet-stream",
+      cv_size: String(data.file.size),
+    };
+
+    await Promise.all([
+      submitWeb3Forms(fields, "148c465d-a9d5-4344-8999-d3bec14267a6", [
+        { name: "attachment", file: data.file },
+      ]),
+      fetch(MAKE_CV_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fields),
+      }).catch(() => undefined),
+    ]);
+
     return { success: true, signedUrl, filename: data.file.name };
   });
 
