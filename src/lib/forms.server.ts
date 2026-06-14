@@ -10,62 +10,49 @@ type Web3FormsAttachment = {
   file: File;
 };
 
-function arrayBufferToBase64(buffer: ArrayBuffer): string {
-  const bytes = new Uint8Array(buffer);
-  let binary = "";
-  const chunkSize = 8192;
-  for (let i = 0; i < bytes.length; i += chunkSize) {
-    binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
-  }
-  return btoa(binary);
-}
-
 export async function submitWeb3Forms(fields: Record<string, string>, accessKey?: string, attachments: Web3FormsAttachment[] = []) {
   const key = accessKey ?? process.env.WEB3FORMS_ACCESS_KEY;
   if (!key) throw new Error("WEB3FORMS_ACCESS_KEY not configured");
 
-  // If there are file attachments, send JSON with base64 (avoids multipart edge issues in Workers)
-  let res: Response;
-  if (attachments.length > 0) {
-    const attachmentPayloads = await Promise.all(
-      attachments.map(async (a) => {
-        const buf = await a.file.arrayBuffer();
-        const b64 = arrayBufferToBase64(buf);
-        return { name: a.file.name, data: b64 };
-      }),
-    );
-    const body = {
-      access_key: key,
-      ...fields,
-      attachments: attachmentPayloads,
-    };
-    res = await fetch(WEB3FORMS_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify(body),
-    });
-  } else {
-    const fd = new FormData();
-    fd.append("access_key", key);
-    for (const [k, v] of Object.entries(fields)) fd.append(k, v);
-    res = await fetch(WEB3FORMS_URL, {
-      method: "POST",
-      headers: { Accept: "application/json" },
-      body: fd,
-    });
+  // Web3Forms requires multipart/form-data for file attachments — JSON API does not support files.
+  const fd = new FormData();
+  fd.append("access_key", key);
+  for (const [k, v] of Object.entries(fields)) fd.append(k, v);
+  for (const a of attachments) {
+    fd.append(a.name, a.file, a.file.name);
   }
 
+  console.log("[web3forms] sending", {
+    url: WEB3FORMS_URL,
+    fieldCount: Object.keys(fields).length,
+    attachmentCount: attachments.length,
+    attachmentInfo: attachments.map((a) => ({ name: a.name, filename: a.file.name, size: a.file.size, type: a.file.type })),
+  });
+
+  const res = await fetch(WEB3FORMS_URL, {
+    method: "POST",
+    headers: { Accept: "application/json" },
+    body: fd,
+  });
+
   const text = await res.text();
-  console.log("[web3forms] response", { status: res.status, contentType: res.headers.get("content-type"), bodyPreview: text.slice(0, 300) });
+  console.log("[web3forms] response FULL", {
+    status: res.status,
+    ok: res.ok,
+    contentType: res.headers.get("content-type"),
+    body: text,
+  });
+
   let data: { success?: boolean; message?: string } | null = null;
   try {
     data = JSON.parse(text) as { success?: boolean; message?: string };
   } catch {
-    throw new Error(`Web3Forms ${res.status} (non-JSON): ${text.slice(0, 200)}`);
+    throw new Error(`Web3Forms ${res.status} (non-JSON response): ${text.slice(0, 300)}`);
   }
   if (!res.ok || !data.success) {
-    throw new Error(data.message || `Web3Forms submission failed (${res.status})`);
+    throw new Error(data.message || `Web3Forms submission failed (status ${res.status}): ${text.slice(0, 200)}`);
   }
+  console.log("[web3forms] SUCCESS confirmed", { status: res.status, message: data.message });
 }
 
 export async function uploadCVAndSign(file: File, ext: string, metadata: Record<string, string>) {
