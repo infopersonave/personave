@@ -35,7 +35,20 @@ export const submitCV = createServerFn({ method: "POST" })
       oportunidades: data.oportunidades,
     };
 
-    const signedUrl = await uploadCVAndSign(data.file, data.ext, metadata).catch(() => "");
+    console.log("[submitCV] received file", {
+      name: data.file.name,
+      size: data.file.size,
+      type: data.file.type,
+      ext: data.ext,
+    });
+
+    let signedUrl = "";
+    try {
+      signedUrl = await uploadCVAndSign(data.file, data.ext, metadata);
+      console.log("[submitCV] upload OK", { signedUrl, filename: data.file.name });
+    } catch (e) {
+      console.error("[submitCV] upload FAILED", e);
+    }
 
     const payload = {
       ...metadata,
