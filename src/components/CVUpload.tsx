@@ -98,7 +98,7 @@ export function CVUpload() {
             <p className="font-semibold">Arrastra tu CV aquí</p>
             <p className="text-sm text-muted-foreground mt-1">o haz click para seleccionar</p>
             <p className="text-xs text-muted-foreground mt-3">PDF, DOC, DOCX · máx 5MB</p>
-            <input ref={inputRef} type="file" accept=".pdf,.doc,.docx" onChange={onChange} className="hidden" />
+            <input ref={inputRef} type="file" accept=".pdf,application/pdf" onChange={onChange} className="hidden" />
           </div>
         ) : (
           <>
