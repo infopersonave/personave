@@ -85,7 +85,7 @@ export const submitCV = createServerFn({ method: "POST" })
     try {
       void fetch(BACKUP_SHEET_WEBHOOK_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "text/plain" },
         body: JSON.stringify({
           nombre: data.name,
           email: data.email,
