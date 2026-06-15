@@ -8,7 +8,7 @@ export const submitCV = createServerFn({ method: "POST" })
     const file = data.get("cv");
     if (!(file instanceof File)) throw new Error("CV file is required");
     if (file.size === 0) throw new Error("Empty file");
-    if (file.size > 5 * 1024 * 1024) throw new Error("File exceeds 5MB (Web3Forms limit)");
+    if (file.size > 5 * 1024 * 1024) throw new Error("File exceeds 5MB");
     const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
     if (!["pdf", "doc", "docx"].includes(ext)) throw new Error("Invalid file type");
     const name = String(data.get("name") ?? "").trim().slice(0, 200);
@@ -26,7 +26,7 @@ export const submitCV = createServerFn({ method: "POST" })
     };
   })
   .handler(async ({ data }) => {
-    const { submitWeb3Forms, uploadCVAndSign } = await import("./forms.server");
+    const { uploadCVAndSign } = await import("./forms.server");
     const metadata = {
       name: data.name,
       email: data.email,
@@ -37,35 +37,24 @@ export const submitCV = createServerFn({ method: "POST" })
 
     const signedUrl = await uploadCVAndSign(data.file, data.ext, metadata).catch(() => "");
 
-    const fields = {
-      subject: "Nuevo CV en Persona",
-      from_name: "Persona - Profesionales",
+    const payload = {
       ...metadata,
-      cv_filename: data.file.name,
-      cv_type: data.file.type || "application/octet-stream",
-      cv_size: String(data.file.size),
       cv_url: signedUrl,
+      cv_filename: data.file.name,
     };
 
-    // SECONDARY: Make webhook — fire-and-forget, fails silently
-    void (async () => {
-      try {
-        const arrayBuffer = await data.file.arrayBuffer();
-        const cv_base64 = Buffer.from(arrayBuffer).toString("base64");
-        await fetch(MAKE_CV_WEBHOOK_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...fields, cv_base64 }),
-        });
-      } catch {
-        // Copia secundaria: ignorar errores
-      }
-    })();
+    const res = await fetch(MAKE_CV_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
 
-    // PRIMARY: Web3Forms — determines success/error visible to user
-    await submitWeb3Forms(fields, "148c465d-a9d5-4344-8999-d3bec14267a6", [
-      { name: "attachment", file: data.file },
-    ]);
+    console.log("[make] response", { status: res.status, ok: res.ok });
+
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      throw new Error(`Make webhook failed (status ${res.status}): ${text.slice(0, 200)}`);
+    }
 
     return { success: true, signedUrl, filename: data.file.name };
   });
