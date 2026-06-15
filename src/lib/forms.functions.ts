@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 
 const MAKE_CV_WEBHOOK_URL = "https://hook.us2.make.com/5hbzwu0mqd0r35vebv13lmtkqkhvgqdj";
+const BACKUP_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyQ0y9UUquM_DydCFOOhDtQ0GMjgEQoDI2CZAZxg4VluPYtTjUeOrHUqz7P3_vdtyLaDw/exec";
 
 export const submitCV = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => {
