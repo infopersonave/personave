@@ -59,6 +59,14 @@ export async function uploadCVAndSign(file: File, ext: string, metadata: Record<
   const submissionId = crypto.randomUUID();
   const path = `submissions/${submissionId}/cv.${ext}`;
   const bytes = new Uint8Array(await file.arrayBuffer());
+  console.log("[uploadCVAndSign] uploading", {
+    path,
+    incomingFileName: file.name,
+    incomingFileSize: file.size,
+    incomingFileType: file.type,
+    bytesLength: bytes.length,
+    firstBytes: new TextDecoder().decode(bytes.slice(0, 16)),
+  });
   const { error: uploadError } = await supabaseAdmin.storage
     .from("cvs")
     .upload(path, bytes, {
