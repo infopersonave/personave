@@ -10,12 +10,10 @@ export function CVUpload() {
   const [sending, setSending] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const accept = [".pdf", ".doc", ".docx"];
-
   const handleFile = (f: File) => {
-    const ext = "." + f.name.split(".").pop()?.toLowerCase();
-    if (!accept.includes(ext)) {
-      alert("Solo PDF o Word (.pdf, .doc, .docx)");
+    const ext = "." + (f.name.split(".").pop()?.toLowerCase() ?? "");
+    if (f.type !== "application/pdf" && ext !== ".pdf") {
+      alert("Por favor sube tu CV en formato PDF");
       return;
     }
     if (f.size > 5 * 1024 * 1024) {
@@ -99,8 +97,8 @@ export function CVUpload() {
             <Upload className="mx-auto w-10 h-10 text-muted-foreground mb-3" />
             <p className="font-semibold">Arrastra tu CV aquí</p>
             <p className="text-sm text-muted-foreground mt-1">o haz click para seleccionar</p>
-            <p className="text-xs text-muted-foreground mt-3">PDF, DOC, DOCX · máx 5MB</p>
-            <input ref={inputRef} type="file" accept=".pdf,.doc,.docx" onChange={onChange} className="hidden" />
+            <p className="text-xs text-muted-foreground mt-3">PDF · máx 5MB</p>
+            <input ref={inputRef} type="file" accept=".pdf,application/pdf" onChange={onChange} className="hidden" />
           </div>
         ) : (
           <>

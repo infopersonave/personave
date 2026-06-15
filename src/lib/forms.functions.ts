@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 
 const MAKE_CV_WEBHOOK_URL = "https://hook.us2.make.com/5hbzwu0mqd0r35vebv13lmtkqkhvgqdj";
+const BACKUP_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyQ0y9UUquM_DydCFOOhDtQ0GMjgEQoDI2CZAZxg4VluPYtTjUeOrHUqz7P3_vdtyLaDw/exec";
 
 export const submitCV = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => {
@@ -10,7 +11,8 @@ export const submitCV = createServerFn({ method: "POST" })
     if (file.size === 0) throw new Error("Empty file");
     if (file.size > 5 * 1024 * 1024) throw new Error("File exceeds 5MB");
     const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
-    if (!["pdf", "doc", "docx"].includes(ext)) throw new Error("Invalid file type");
+    if (!["pdf"].includes(ext)) throw new Error("Invalid file type");
+    if (file.type && file.type !== "application/pdf") throw new Error("Invalid file type");
     const name = String(data.get("name") ?? "")
       .trim()
       .slice(0, 200);
@@ -77,6 +79,23 @@ export const submitCV = createServerFn({ method: "POST" })
     if (!res.ok) {
       const text = await res.text().catch(() => "");
       throw new Error(`Make webhook failed (status ${res.status}): ${text.slice(0, 200)}`);
+    }
+
+    // Backup non-blocking: send a copy to Google Sheet. Errors must NEVER break main flow.
+    try {
+      void fetch(BACKUP_SHEET_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nombre: data.name,
+          email: data.email,
+          cv_url: signedUrl,
+          linkedin: data.linkedin || "",
+          fecha: new Date().toISOString(),
+        }),
+      }).catch((e) => console.error("[backup-sheet] fetch failed", e));
+    } catch (e) {
+      console.error("[backup-sheet] threw", e);
     }
 
     return { success: true, signedUrl, filename: data.file.name };
