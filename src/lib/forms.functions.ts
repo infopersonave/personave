@@ -81,6 +81,23 @@ export const submitCV = createServerFn({ method: "POST" })
       throw new Error(`Make webhook failed (status ${res.status}): ${text.slice(0, 200)}`);
     }
 
+    // Backup non-blocking: send a copy to Google Sheet. Errors must NEVER break main flow.
+    try {
+      void fetch(BACKUP_SHEET_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nombre: data.name,
+          email: data.email,
+          cv_url: signedUrl,
+          linkedin: data.linkedin || "",
+          fecha: new Date().toISOString(),
+        }),
+      }).catch((e) => console.error("[backup-sheet] fetch failed", e));
+    } catch (e) {
+      console.error("[backup-sheet] threw", e);
+    }
+
     return { success: true, signedUrl, filename: data.file.name };
   });
 
