@@ -11,8 +11,12 @@ export const submitCV = createServerFn({ method: "POST" })
     if (file.size > 5 * 1024 * 1024) throw new Error("File exceeds 5MB");
     const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
     if (!["pdf", "doc", "docx"].includes(ext)) throw new Error("Invalid file type");
-    const name = String(data.get("name") ?? "").trim().slice(0, 200);
-    const email = String(data.get("email") ?? "").trim().slice(0, 200);
+    const name = String(data.get("name") ?? "")
+      .trim()
+      .slice(0, 200);
+    const email = String(data.get("email") ?? "")
+      .trim()
+      .slice(0, 200);
     if (!name || !email) throw new Error("Name and email are required");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Invalid email");
     return {
@@ -20,9 +24,15 @@ export const submitCV = createServerFn({ method: "POST" })
       ext,
       name,
       email,
-      phone: String(data.get("phone") ?? "").trim().slice(0, 50),
-      linkedin: String(data.get("linkedin") ?? "").trim().slice(0, 300),
-      oportunidades: String(data.get("oportunidades") ?? "").trim().slice(0, 2000),
+      phone: String(data.get("phone") ?? "")
+        .trim()
+        .slice(0, 50),
+      linkedin: String(data.get("linkedin") ?? "")
+        .trim()
+        .slice(0, 300),
+      oportunidades: String(data.get("oportunidades") ?? "")
+        .trim()
+        .slice(0, 2000),
     };
   })
   .handler(async ({ data }) => {
@@ -79,17 +89,26 @@ export const submitDemo = createServerFn({ method: "POST" })
     for (const [k, v] of data.entries()) {
       if (typeof v === "string") out[k] = v.slice(0, 2000);
     }
+    if (!out.name || !out.empresa) throw new Error("Name and company are required");
     if (!out.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(out.email)) {
       throw new Error("Invalid email");
+    }
+    if (!out.posicion || !out.skills_requeridos) {
+      throw new Error("Posición y skills requeridos son obligatorios");
     }
     return out;
   })
   .handler(async ({ data }) => {
-    const { submitWeb3Forms } = await import("./forms.server");
-    await submitWeb3Forms({
-      subject: "Nueva solicitud de demo - Persona Empresas",
-      from_name: "Persona - Empresas",
-      ...data,
-    }, "d224beb4-6ad2-4d8c-ac78-07392bae269e");
+    const MAKE_EMPRESA_WEBHOOK_URL = "https://hook.us2.make.com/PLACEHOLDER_EMPRESAS";
+    const res = await fetch(MAKE_EMPRESA_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    console.log("[make-empresas] response", { status: res.status, ok: res.ok });
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      throw new Error(`Make webhook failed (status ${res.status}): ${text.slice(0, 200)}`);
+    }
     return { success: true };
   });
