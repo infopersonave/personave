@@ -10,7 +10,11 @@ export const Route = createFileRoute("/empresas")({
   head: () => ({
     meta: [
       { title: "Persona para Empresas — Talento validado en Venezuela" },
-      { name: "description", content: "Reduce tu tiempo de contratación en 60%. Accede a profesionales venezolanos pre-filtrados y listos para trabajar." },
+      {
+        name: "description",
+        content:
+          "Reduce tu tiempo de contratación en 60%. Accede a profesionales venezolanos pre-filtrados y listos para trabajar.",
+      },
       { property: "og:title", content: "Persona para Empresas" },
       { property: "og:description", content: "Recibe shortlists de candidatos validados en 48-72 horas." },
     ],
@@ -19,19 +23,46 @@ export const Route = createFileRoute("/empresas")({
 });
 
 const benefits = [
-  { icon: "⚡", title: "Ahorra tiempo", desc: "Recibe shortlists de 3-5 candidatos validados en 48-72 horas. No más revisar cientos de CVs." },
-  { icon: "🎯", title: "Talento validado", desc: "Cada perfil es verificado personalmente. Solo entrevistas candidatos pre-filtrados y calificados." },
-  { icon: "💰", title: "Reduce costos", desc: "Menos tiempo de tu equipo revisando CVs. Menos riesgo de contrataciones fallidas." },
-  { icon: "🇻🇪", title: "Enfoque Venezuela", desc: "Conocemos el mercado local. Talento venezolano de clase mundial listo para tu empresa." },
-  { icon: "🤝", title: "Matching humano", desc: "No solo skills técnicos. Consideramos cultura, valores y fit con tu equipo." },
-  { icon: "🔒", title: "Confidencialidad", desc: "Tus procesos de contratación son privados. Discreción total en búsquedas sensibles." },
+  {
+    icon: "⚡",
+    title: "Ahorra tiempo",
+    desc: "Recibe shortlists de 3-5 candidatos validados en 48-72 horas. No más revisar cientos de CVs.",
+  },
+  {
+    icon: "🎯",
+    title: "Talento validado",
+    desc: "Cada perfil es verificado personalmente. Solo entrevistas candidatos pre-filtrados y calificados.",
+  },
+  {
+    icon: "💰",
+    title: "Reduce costos",
+    desc: "Menos tiempo de tu equipo revisando CVs. Menos riesgo de contrataciones fallidas.",
+  },
+  {
+    icon: "🇻🇪",
+    title: "Enfoque Venezuela",
+    desc: "Conocemos el mercado local. Talento venezolano de clase mundial listo para tu empresa.",
+  },
+  {
+    icon: "🤝",
+    title: "Matching humano",
+    desc: "No solo skills técnicos. Consideramos cultura, valores y fit con tu equipo.",
+  },
+  {
+    icon: "🔒",
+    title: "Confidencialidad",
+    desc: "Tus procesos de contratación son privados. Discreción total en búsquedas sensibles.",
+  },
 ];
 
 const steps = [
   { t: "Comparte el perfil", d: "Nos cuentas qué tipo de talento necesitas: posición, skills, experiencia, cultura." },
   { t: "Buscamos y validamos", d: "Buscamos en nuestra red de talento validado y seleccionamos los mejores matches." },
   { t: "Recibes shortlist", d: "En 48-72 horas te enviamos 3-5 candidatos pre-filtrados listos para entrevistar." },
-  { t: "Contratas más rápido", d: "Entrevistas solo candidatos calificados. Reduces tu tiempo de contratación en 60%." },
+  {
+    t: "Contratas más rápido",
+    d: "Entrevistas solo candidatos calificados. Reduces tu tiempo de contratación en 60%.",
+  },
 ];
 
 function Empresas() {
@@ -51,7 +82,10 @@ function Empresas() {
           <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
             Reduce tu tiempo de contratación en 60%. Accede a profesionales pre-filtrados y listos para trabajar.
           </p>
-          <a href="#contacto" className="inline-block mt-10 bg-gradient-brand text-white font-semibold px-8 py-4 rounded-full shadow-glow hover:-translate-y-0.5 transition-all">
+          <a
+            href="#contacto"
+            className="inline-block mt-10 bg-gradient-brand text-white font-semibold px-8 py-4 rounded-full shadow-glow hover:-translate-y-0.5 transition-all"
+          >
             Solicitar Demo
           </a>
         </div>
@@ -61,12 +95,17 @@ function Empresas() {
       <section className="py-24">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <h2 className="text-4xl md:text-5xl font-bold">¿Por qué <span className="text-gradient">Persona</span> para empresas?</h2>
+            <h2 className="text-4xl md:text-5xl font-bold">
+              ¿Por qué <span className="text-gradient">Persona</span> para empresas?
+            </h2>
             <p className="mt-4 text-lg text-muted-foreground">Contratación más rápida, eficiente y humana</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {benefits.map((f) => (
-              <div key={f.title} className="glass-strong rounded-2xl p-7 hover:-translate-y-1 hover:shadow-glow transition-all">
+              <div
+                key={f.title}
+                className="glass-strong rounded-2xl p-7 hover:-translate-y-1 hover:shadow-glow transition-all"
+              >
                 <div className="text-4xl mb-4">{f.icon}</div>
                 <h3 className="text-xl font-bold mb-2">{f.title}</h3>
                 <p className="text-muted-foreground">{f.desc}</p>
@@ -102,7 +141,9 @@ function Empresas() {
         <div className="mx-auto max-w-2xl px-6">
           <div className="text-center mb-10">
             <h2 className="text-4xl md:text-5xl font-bold">Agenda una demo</h2>
-            <p className="mt-4 text-lg text-muted-foreground">Cuéntanos sobre tu empresa y tus necesidades de contratación</p>
+            <p className="mt-4 text-lg text-muted-foreground">
+              Cuéntanos sobre tu empresa y tus necesidades de contratación
+            </p>
           </div>
           <DemoForm />
         </div>
@@ -126,7 +167,7 @@ function DemoForm() {
       setSent(true);
     } catch (err) {
       console.error(err);
-      alert('Hubo un error enviando tu solicitud. Inténtalo de nuevo.');
+      alert("Hubo un error enviando tu solicitud. Inténtalo de nuevo.");
     } finally {
       setSending(false);
     }
@@ -150,12 +191,68 @@ function DemoForm() {
       <Field name="email" label="Email corporativo *" type="email" required />
       <Field name="empresa" label="Empresa *" required />
       <Field name="cargo" label="Cargo" />
+
+      <Field name="posicion" label="Posición que buscan contratar *" required />
+
       <div>
-        <label className="block text-sm font-medium mb-1.5">¿Qué tipo de talento necesitas?</label>
-        <textarea name="mensaje" rows={4} className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20" />
+        <label className="block text-sm font-medium mb-1.5">Seniority</label>
+        <select
+          name="seniority"
+          className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+        >
+          <option value="">Selecciona...</option>
+          <option value="Junior">Junior</option>
+          <option value="Intermedio">Intermedio</option>
+          <option value="Senior">Senior</option>
+        </select>
       </div>
-      <button type="submit" disabled={sending} className="w-full bg-gradient-brand text-white font-semibold py-3.5 rounded-xl shadow-glow hover:shadow-xl transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed">
-        {sending ? 'Enviando...' : 'Solicitar Demo'}
+
+      <div>
+        <label className="block text-sm font-medium mb-1.5">
+          Skills requeridos * <span className="text-muted-foreground font-normal">(separados por coma)</span>
+        </label>
+        <input
+          name="skills_requeridos"
+          required
+          className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+          placeholder="Ej: Shopify, SEO, Excel"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1.5">
+          Skills deseables <span className="text-muted-foreground font-normal">(opcional)</span>
+        </label>
+        <input
+          name="skills_deseables"
+          className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+          placeholder="Ej: Inglés, Canva"
+        />
+      </div>
+
+      <Field name="anos_experiencia_min" label="Años de experiencia mínimos" type="number" min="0" />
+
+      <Field name="industria_preferida" label="Industria preferida (opcional)" />
+
+      <div>
+        <label className="block text-sm font-medium mb-1.5">Modalidad</label>
+        <select
+          name="modalidad"
+          className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+        >
+          <option value="">Selecciona...</option>
+          <option value="Presencial">Presencial</option>
+          <option value="Remoto">Remoto</option>
+          <option value="Híbrido">Híbrido</option>
+        </select>
+      </div>
+
+      <button
+        type="submit"
+        disabled={sending}
+        className="w-full bg-gradient-brand text-white font-semibold py-3.5 rounded-xl shadow-glow hover:shadow-xl transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed"
+      >
+        {sending ? "Enviando..." : "Solicitar Demo"}
       </button>
     </form>
   );
@@ -165,7 +262,10 @@ function Field({ label, ...props }: { label: string } & React.InputHTMLAttribute
   return (
     <div>
       <label className="block text-sm font-medium mb-1.5">{label}</label>
-      <input {...props} className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20" />
+      <input
+        {...props}
+        className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+      />
     </div>
   );
 }
