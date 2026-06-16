@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Brain } from "lucide-react";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { CVUpload } from "@/components/CVUpload";
@@ -18,7 +19,7 @@ export const Route = createFileRoute("/")({
 
 const features = [
   { icon: "🎯", title: "Talento Validado", desc: "Cada perfil es revisado y validado por nuestro equipo. No eres un número en una base de datos." },
-  { icon: "⚡", title: "Matching Rápido", desc: "Conectamos empresas con candidatos en menos de 48 horas. Sin procesos eternos." },
+  { icon: "⚡", title: "Matching Rápido", desc: "Conectamos empresas con los candidatos correctos, sin procesos eternos ni esperas innecesarias." },
   { icon: "🤝", title: "Conexión Humana", desc: "Creemos en las personas, no en algoritmos fríos. Tu historia profesional importa." },
   { icon: "🌎", title: "Alcance Global", desc: "Conectamos talento venezolano con oportunidades en cualquier parte del mundo. Sin fronteras." },
   { icon: "📈", title: "Crecimiento Real", desc: "No solo conseguimos trabajo, construimos carreras profesionales de largo plazo." },
@@ -71,6 +72,7 @@ function Index() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
             {stats.map((s) => {
               const isFlag = s.v === "🇻🇪";
+              const isBrain = s.v === "🧠";
               return (
                 <div key={s.l} className="glass-strong rounded-2xl p-8 text-center hover:-translate-y-1 transition-transform">
                   {isFlag ? (
@@ -79,6 +81,23 @@ function Index() {
                         src="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f1fb-1f1ea.svg"
                         alt="Bandera de Venezuela"
                         className="h-14 md:h-16 w-auto"
+                      />
+                    </div>
+                  ) : isBrain ? (
+                    <div className="mb-3 flex justify-center">
+                      <svg width="0" height="0" className="absolute">
+                        <defs>
+                          <linearGradient id="brainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stopColor="#8B5CF6" />
+                            <stop offset="50%" stopColor="#EC4899" />
+                            <stop offset="100%" stopColor="#3B82F6" />
+                          </linearGradient>
+                        </defs>
+                      </svg>
+                      <Brain
+                        className="h-14 w-14 md:h-16 md:w-16"
+                        style={{ stroke: "url(#brainGradient)" }}
+                        strokeWidth={1.75}
                       />
                     </div>
                   ) : (
