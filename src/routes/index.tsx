@@ -19,7 +19,7 @@ export const Route = createFileRoute("/")({
 
 const features = [
   { icon: "🎯", title: "Talento Validado", desc: "Cada perfil es revisado y validado por nuestro equipo. No eres un número en una base de datos." },
-  { icon: "⚡", title: "Matching Rápido", desc: "Conectamos empresas con candidatos en menos de 48 horas. Sin procesos eternos." },
+  { icon: "⚡", title: "Matching Rápido", desc: "Conectamos empresas con los candidatos correctos, sin procesos eternos ni esperas innecesarias." },
   { icon: "🤝", title: "Conexión Humana", desc: "Creemos en las personas, no en algoritmos fríos. Tu historia profesional importa." },
   { icon: "🌎", title: "Alcance Global", desc: "Conectamos talento venezolano con oportunidades en cualquier parte del mundo. Sin fronteras." },
   { icon: "📈", title: "Crecimiento Real", desc: "No solo conseguimos trabajo, construimos carreras profesionales de largo plazo." },
