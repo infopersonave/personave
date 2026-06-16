@@ -54,7 +54,7 @@ function Index() {
               Conectamos personas correctas con oportunidades correctas. Talento validado, contratación humana, oportunidades reales.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              {["✓ Talento validado", "✓ Proceso rápido", "✓ 100% Venezuela"].map((b) => (
+              {["✓ Talento validado", "✓ Proceso rápido", "✓ Talento venezolano, alcance global"].map((b) => (
                 <span key={b} className="px-4 py-2 rounded-full bg-white/70 backdrop-blur border border-border text-sm font-medium">{b}</span>
               ))}
             </div>
