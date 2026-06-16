@@ -68,7 +68,7 @@ function Index() {
       {/* STATS */}
       <section className="py-20 bg-bg-light">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
             {stats.map((s) => {
               const isFlag = s.v === "🇻🇪";
               return (
