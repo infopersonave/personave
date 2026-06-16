@@ -20,16 +20,15 @@ const features = [
   { icon: "🎯", title: "Talento Validado", desc: "Cada perfil es revisado y validado por nuestro equipo. No eres un número en una base de datos." },
   { icon: "⚡", title: "Matching Rápido", desc: "Conectamos empresas con candidatos en menos de 48 horas. Sin procesos eternos." },
   { icon: "🤝", title: "Conexión Humana", desc: "Creemos en las personas, no en algoritmos fríos. Tu historia profesional importa." },
-  { icon: "🇻🇪", title: "Enfocado en Venezuela", desc: "Conocemos el mercado venezolano. Oportunidades reales en empresas que crecen." },
+  { icon: "🌎", title: "Alcance Global", desc: "Conectamos talento venezolano con oportunidades en cualquier parte del mundo. Sin fronteras." },
   { icon: "📈", title: "Crecimiento Real", desc: "No solo conseguimos trabajo, construimos carreras profesionales de largo plazo." },
   { icon: "🔒", title: "Confidencial", desc: "Tu información está segura. Control total sobre quién ve tu perfil." },
 ];
 
 const stats = [
-  { v: "50", l: "Lugares disponibles en lanzamiento" },
-  { v: "24-48", l: "Horas para validación de perfil" },
+  { v: "🧠", l: "Validación inteligente con tecnología y criterio humano" },
   { v: "100%", l: "Gratis para profesionales" },
-  { v: "🇻🇪", l: "Enfocados en Venezuela" },
+  { v: "🇻🇪", l: "Talento venezolano, oportunidades globales" },
 ];
 
 const steps = [
