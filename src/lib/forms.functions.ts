@@ -81,9 +81,11 @@ export const submitCV = createServerFn({ method: "POST" })
       throw new Error(`Make webhook failed (status ${res.status}): ${text.slice(0, 200)}`);
     }
 
-    // Backup non-blocking: send a copy to Google Sheet. Errors must NEVER break main flow.
+    // Backup: send a copy to Google Sheet. We await it so the serverless
+    // function doesn't terminate before the request completes, but errors
+    // here must NEVER break or throw in the main flow.
     try {
-      void fetch(BACKUP_SHEET_WEBHOOK_URL, {
+      const backupRes = await fetch(BACKUP_SHEET_WEBHOOK_URL, {
         method: "POST",
         headers: { "Content-Type": "text/plain" },
         body: JSON.stringify({
@@ -93,9 +95,10 @@ export const submitCV = createServerFn({ method: "POST" })
           linkedin: data.linkedin || "",
           fecha: new Date().toISOString(),
         }),
-      }).catch((e) => console.error("[backup-sheet] fetch failed", e));
+      });
+      console.log("[backup-sheet] response", { status: backupRes.status, ok: backupRes.ok });
     } catch (e) {
-      console.error("[backup-sheet] threw", e);
+      console.error("[backup-sheet] fetch failed", e);
     }
 
     return { success: true, signedUrl, filename: data.file.name };
