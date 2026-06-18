@@ -247,6 +247,22 @@ function DemoForm() {
         </select>
       </div>
 
+      <Field name="num_vacantes" label="Número de vacantes *" type="number" min="1" required placeholder="Ej: 2" />
+
+      <Field name="ubicacion" label="Ubicación *" required placeholder="Ej: Caracas, Venezuela / Remoto global" />
+
+      <Field name="rango_salarial" label="Rango salarial (opcional)" placeholder="Ej: 800-1500 USD/mes" />
+
+      <div>
+        <label className="block text-sm font-medium mb-1.5">Descripción breve del rol (opcional)</label>
+        <textarea
+          name="descripcion_rol"
+          rows={4}
+          placeholder="Cuéntanos más sobre el rol, el equipo, la cultura o cualquier contexto que ayude a encontrar al candidato ideal"
+          className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+        />
+      </div>
+
       <button
         type="submit"
         disabled={sending}
