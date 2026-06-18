@@ -190,17 +190,19 @@ function DemoForm() {
       <Field name="name" label="Nombre completo *" required />
       <Field name="email" label="Email corporativo *" type="email" required />
       <Field name="empresa" label="Empresa *" required />
-      <Field name="cargo" label="Cargo" />
+      <Field name="cargo" label="Cargo *" required />
 
       <Field name="posicion" label="Posición que buscan contratar *" required />
 
       <div>
-        <label className="block text-sm font-medium mb-1.5">Seniority</label>
+        <label className="block text-sm font-medium mb-1.5">Seniority *</label>
         <select
           name="seniority"
+          required
+          defaultValue=""
           className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
         >
-          <option value="">Selecciona...</option>
+          <option value="" disabled>Selecciona...</option>
           <option value="Junior">Junior</option>
           <option value="Intermedio">Intermedio</option>
           <option value="Senior">Senior</option>
@@ -221,26 +223,29 @@ function DemoForm() {
 
       <div>
         <label className="block text-sm font-medium mb-1.5">
-          Skills deseables <span className="text-muted-foreground font-normal">(opcional)</span>
+          Skills deseables * <span className="text-muted-foreground font-normal">(separados por coma)</span>
         </label>
         <input
           name="skills_deseables"
+          required
           className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
           placeholder="Ej: Inglés, Canva"
         />
       </div>
 
-      <Field name="anos_experiencia_min" label="Años de experiencia mínimos" type="number" min="0" />
+      <Field name="anos_experiencia_min" label="Años de experiencia mínimos *" type="number" min="0" required />
 
-      <Field name="industria_preferida" label="Industria preferida (opcional)" />
+      <Field name="industria_preferida" label="Industria preferida *" required />
 
       <div>
-        <label className="block text-sm font-medium mb-1.5">Modalidad</label>
+        <label className="block text-sm font-medium mb-1.5">Modalidad *</label>
         <select
           name="modalidad"
+          required
+          defaultValue=""
           className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
         >
-          <option value="">Selecciona...</option>
+          <option value="" disabled>Selecciona...</option>
           <option value="Presencial">Presencial</option>
           <option value="Remoto">Remoto</option>
           <option value="Híbrido">Híbrido</option>
@@ -251,17 +256,19 @@ function DemoForm() {
 
       <Field name="ubicacion" label="Ubicación *" required placeholder="Ej: Caracas, Venezuela / Remoto global" />
 
-      <Field name="rango_salarial" label="Rango salarial (opcional)" placeholder="Ej: 800-1500 USD/mes" />
+      <Field name="rango_salarial" label="Rango salarial *" required placeholder="Ej: 800-1500 USD/mes" />
 
       <div>
-        <label className="block text-sm font-medium mb-1.5">Descripción breve del rol (opcional)</label>
+        <label className="block text-sm font-medium mb-1.5">Descripción breve del rol *</label>
         <textarea
           name="descripcion_rol"
           rows={4}
+          required
           placeholder="Cuéntanos más sobre el rol, el equipo, la cultura o cualquier contexto que ayude a encontrar al candidato ideal"
           className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
         />
       </div>
+
 
       <button
         type="submit"
