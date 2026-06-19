@@ -145,11 +145,12 @@ export function CVUpload() {
   );
 }
 
-function Input({ label, ...props }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+function Input({ label, help, ...props }: { label: string; help?: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div>
       <label className="block text-sm font-medium mb-1.5">{label}</label>
       <input {...props} className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20" />
+      {help ? <p className="mt-1.5 text-xs text-muted-foreground">{help}</p> : null}
     </div>
   );
 }
