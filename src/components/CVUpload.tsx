@@ -117,7 +117,18 @@ export function CVUpload() {
 
             <Input name="name" label="Nombre completo *" required />
             <Input name="email" type="email" label="Email *" required />
-            <Input name="phone" type="tel" label="Teléfono" />
+            <Input
+              name="phone"
+              type="tel"
+              label="Teléfono *"
+              required
+              placeholder="+58XXXXXXXXXX"
+              pattern="^\+[0-9]{8,16}$"
+              title="Formato inválido. Usa el formato internacional: +58XXXXXXXXXX"
+              onInvalid={(e) => e.currentTarget.setCustomValidity("Formato inválido. Usa el formato internacional: +58XXXXXXXXXX")}
+              onInput={(e) => e.currentTarget.setCustomValidity("")}
+              help="Ingresa tu número con código de país, sin espacios ni guiones. Ejemplo: +58XXXXXXXXXX"
+            />
             <Input name="linkedin" label="LinkedIn (opcional)" />
             <div>
               <label className="block text-sm font-medium mb-1.5">¿Qué oportunidades buscas?</label>
@@ -134,11 +145,12 @@ export function CVUpload() {
   );
 }
 
-function Input({ label, ...props }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
+function Input({ label, help, ...props }: { label: string; help?: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div>
       <label className="block text-sm font-medium mb-1.5">{label}</label>
       <input {...props} className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20" />
+      {help ? <p className="mt-1.5 text-xs text-muted-foreground">{help}</p> : null}
     </div>
   );
 }
