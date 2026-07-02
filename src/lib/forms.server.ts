@@ -3,7 +3,7 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 const WEB3FORMS_URL = "https://api.web3forms.com/submit";
 
 export const MAX_CV_BYTES = 10 * 1024 * 1024;
-export const ALLOWED_EXTS = ["pdf", "doc", "docx"];
+export const ALLOWED_EXTS = ["pdf", "doc", "docx", "jpg", "jpeg", "png", "webp", "heic"];
 
 type Web3FormsAttachment = {
   name: string;

@@ -77,8 +77,18 @@ export const submitCV = createServerFn({ method: "POST" })
     if (file.size === 0) throw new Error("Empty file");
     if (file.size > 5 * 1024 * 1024) throw new Error("File exceeds 5MB");
     const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
-    if (!["pdf"].includes(ext)) throw new Error("Invalid file type");
-    if (file.type && file.type !== "application/pdf") throw new Error("Invalid file type");
+    const allowedExts = ["pdf", "doc", "docx", "jpg", "jpeg", "png", "webp", "heic"];
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/heic",
+    ];
+    if (!allowedExts.includes(ext)) throw new Error("Invalid file type");
+    if (file.type && !allowedTypes.includes(file.type)) throw new Error("Invalid file type");
     const name = String(data.get("name") ?? "")
       .trim()
       .slice(0, 200);
