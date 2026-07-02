@@ -177,6 +177,9 @@ function Index() {
             <Link to="/empresas" className="border-2 border-primary text-primary font-semibold px-8 py-4 rounded-full hover:bg-primary hover:text-white transition-all">
               Soy empresa
             </Link>
+            <Link to="/damnificados" className="bg-white/90 text-[#8B5CF6] font-semibold px-8 py-4 rounded-full hover:bg-white transition-all">
+              Damnificados del terremoto →
+            </Link>
           </div>
         </div>
       </section>
