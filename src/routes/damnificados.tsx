@@ -83,7 +83,7 @@ function Damnificados() {
               <Field name="nombre" label="Nombre completo *" required />
               <Field name="telefono" label="Teléfono / WhatsApp *" required placeholder="+58XXXXXXXXXX" />
               <Field name="correo" type="email" label="Correo (opcional)" />
-              <Field name="ubicacion" label="Zona / ubicación *" required placeholder="Ej: Caracas, El Hatillo" />
+              <Field name="ubicacion" label="Zona / ubicación *" required placeholder="Ej: La Guaira, Macuto" />
 
               <div>
                 <label className="block text-sm font-medium mb-1.5">¿Qué sabes hacer? / Experiencia *</label>
@@ -108,6 +108,7 @@ function Damnificados() {
                   <option value="Inmediata">Inmediata</option>
                   <option value="Esta semana">Esta semana</option>
                   <option value="Próximas 2 semanas">Próximas 2 semanas</option>
+                  <option value="En 1 mes">En 1 mes</option>
                 </select>
               </div>
 
