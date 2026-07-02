@@ -104,8 +104,8 @@ export function CVUpload() {
             <Upload className="mx-auto w-10 h-10 text-muted-foreground mb-3" />
             <p className="font-semibold">Arrastra tu CV aquí</p>
             <p className="text-sm text-muted-foreground mt-1">o haz click para seleccionar</p>
-            <p className="text-xs text-muted-foreground mt-3">PDF · máx 5MB</p>
-            <input ref={inputRef} type="file" accept=".pdf,application/pdf" onChange={onChange} className="hidden" />
+            <p className="text-xs text-muted-foreground mt-3">PDF, imagen o Word · máx 5MB</p>
+            <input ref={inputRef} type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,.heic,.doc,.docx,application/pdf,image/*,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={onChange} className="hidden" />
           </div>
         ) : (
           <>
