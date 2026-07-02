@@ -11,9 +11,16 @@ export function CVUpload() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = (f: File) => {
-    const ext = "." + (f.name.split(".").pop()?.toLowerCase() ?? "");
-    if (f.type !== "application/pdf" && ext !== ".pdf") {
-      alert("Por favor sube tu CV en formato PDF");
+    const ext = f.name.split(".").pop()?.toLowerCase() ?? "";
+    const allowedExts = ["pdf", "jpg", "jpeg", "png", "webp", "heic", "doc", "docx"];
+    const allowedTypes = [
+      "application/pdf",
+      "image/jpeg", "image/png", "image/webp", "image/heic",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+    if (!allowedExts.includes(ext) && !allowedTypes.includes(f.type)) {
+      alert("Por favor sube tu CV en formato PDF, imagen (JPG, PNG, WEBP) o Word (.doc, .docx)");
       return;
     }
     if (f.size > 5 * 1024 * 1024) {
