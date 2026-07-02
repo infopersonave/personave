@@ -108,6 +108,7 @@ function Damnificados() {
                   <option value="Inmediata">Inmediata</option>
                   <option value="Esta semana">Esta semana</option>
                   <option value="Próximas 2 semanas">Próximas 2 semanas</option>
+                  <option value="En 1 mes">En 1 mes</option>
                 </select>
               </div>
 
