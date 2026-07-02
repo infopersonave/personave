@@ -86,6 +86,7 @@ export function CVUpload({ origen }: { origen?: string } = {}) {
       </div>
 
       <form onSubmit={onSubmit} className="space-y-4">
+        {origen ? <input type="hidden" name="origen" value={origen} /> : null}
         {!file ? (
           <div
             onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
