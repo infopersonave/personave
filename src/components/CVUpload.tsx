@@ -3,7 +3,7 @@ import { Upload, FileText, CheckCircle2, X } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { submitCV } from "@/lib/forms.functions";
 
-export function CVUpload() {
+export function CVUpload({ origen }: { origen?: string } = {}) {
   const [file, setFile] = useState<File | null>(null);
   const [dragging, setDragging] = useState(false);
   const [submitted, setSubmitted] = useState(false);
