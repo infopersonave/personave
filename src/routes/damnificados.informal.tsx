@@ -6,7 +6,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { submitDamnificado } from "@/lib/forms.functions";
 
-export const Route = createFileRoute("/damnificados")({
+export const Route = createFileRoute("/damnificados/informal")({
   head: () => ({
     meta: [
       { title: "Persona — Registro para damnificados del terremoto" },

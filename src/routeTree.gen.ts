@@ -10,17 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as EmpresasRouteImport } from './routes/empresas'
-import { Route as DamnificadosRouteImport } from './routes/damnificados'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DamnificadosInformalRouteImport } from './routes/damnificados.informal'
 
 const EmpresasRoute = EmpresasRouteImport.update({
   id: '/empresas',
   path: '/empresas',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DamnificadosRoute = DamnificadosRouteImport.update({
-  id: '/damnificados',
-  path: '/damnificados',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -28,35 +23,40 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DamnificadosInformalRoute = DamnificadosInformalRouteImport.update({
+  id: '/damnificados/informal',
+  path: '/damnificados/informal',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/damnificados': typeof DamnificadosRoute
   '/empresas': typeof EmpresasRoute
+  '/damnificados/informal': typeof DamnificadosInformalRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/damnificados': typeof DamnificadosRoute
   '/empresas': typeof EmpresasRoute
+  '/damnificados/informal': typeof DamnificadosInformalRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/damnificados': typeof DamnificadosRoute
   '/empresas': typeof EmpresasRoute
+  '/damnificados/informal': typeof DamnificadosInformalRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/damnificados' | '/empresas'
+  fullPaths: '/' | '/empresas' | '/damnificados/informal'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/damnificados' | '/empresas'
-  id: '__root__' | '/' | '/damnificados' | '/empresas'
+  to: '/' | '/empresas' | '/damnificados/informal'
+  id: '__root__' | '/' | '/empresas' | '/damnificados/informal'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DamnificadosRoute: typeof DamnificadosRoute
   EmpresasRoute: typeof EmpresasRoute
+  DamnificadosInformalRoute: typeof DamnificadosInformalRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -68,13 +68,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmpresasRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/damnificados': {
-      id: '/damnificados'
-      path: '/damnificados'
-      fullPath: '/damnificados'
-      preLoaderRoute: typeof DamnificadosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -82,13 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/damnificados/informal': {
+      id: '/damnificados/informal'
+      path: '/damnificados/informal'
+      fullPath: '/damnificados/informal'
+      preLoaderRoute: typeof DamnificadosInformalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DamnificadosRoute: DamnificadosRoute,
   EmpresasRoute: EmpresasRoute,
+  DamnificadosInformalRoute: DamnificadosInformalRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
