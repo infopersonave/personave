@@ -13,6 +13,7 @@ import { Route as EmpresasRouteImport } from './routes/empresas'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DamnificadosIndexRouteImport } from './routes/damnificados.index'
 import { Route as DamnificadosInformalRouteImport } from './routes/damnificados.informal'
+import { Route as DamnificadosCandidatoRouteImport } from './routes/damnificados.candidato'
 
 const EmpresasRoute = EmpresasRouteImport.update({
   id: '/empresas',
@@ -34,16 +35,23 @@ const DamnificadosInformalRoute = DamnificadosInformalRouteImport.update({
   path: '/damnificados/informal',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DamnificadosCandidatoRoute = DamnificadosCandidatoRouteImport.update({
+  id: '/damnificados/candidato',
+  path: '/damnificados/candidato',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/empresas': typeof EmpresasRoute
+  '/damnificados/candidato': typeof DamnificadosCandidatoRoute
   '/damnificados/informal': typeof DamnificadosInformalRoute
   '/damnificados/': typeof DamnificadosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/empresas': typeof EmpresasRoute
+  '/damnificados/candidato': typeof DamnificadosCandidatoRoute
   '/damnificados/informal': typeof DamnificadosInformalRoute
   '/damnificados': typeof DamnificadosIndexRoute
 }
@@ -51,18 +59,30 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/empresas': typeof EmpresasRoute
+  '/damnificados/candidato': typeof DamnificadosCandidatoRoute
   '/damnificados/informal': typeof DamnificadosInformalRoute
   '/damnificados/': typeof DamnificadosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/empresas' | '/damnificados/informal' | '/damnificados/'
+  fullPaths:
+    | '/'
+    | '/empresas'
+    | '/damnificados/candidato'
+    | '/damnificados/informal'
+    | '/damnificados/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/empresas' | '/damnificados/informal' | '/damnificados'
+  to:
+    | '/'
+    | '/empresas'
+    | '/damnificados/candidato'
+    | '/damnificados/informal'
+    | '/damnificados'
   id:
     | '__root__'
     | '/'
     | '/empresas'
+    | '/damnificados/candidato'
     | '/damnificados/informal'
     | '/damnificados/'
   fileRoutesById: FileRoutesById
@@ -70,6 +90,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   EmpresasRoute: typeof EmpresasRoute
+  DamnificadosCandidatoRoute: typeof DamnificadosCandidatoRoute
   DamnificadosInformalRoute: typeof DamnificadosInformalRoute
   DamnificadosIndexRoute: typeof DamnificadosIndexRoute
 }
@@ -104,12 +125,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DamnificadosInformalRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/damnificados/candidato': {
+      id: '/damnificados/candidato'
+      path: '/damnificados/candidato'
+      fullPath: '/damnificados/candidato'
+      preLoaderRoute: typeof DamnificadosCandidatoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   EmpresasRoute: EmpresasRoute,
+  DamnificadosCandidatoRoute: DamnificadosCandidatoRoute,
   DamnificadosInformalRoute: DamnificadosInformalRoute,
   DamnificadosIndexRoute: DamnificadosIndexRoute,
 }
