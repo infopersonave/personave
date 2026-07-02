@@ -28,7 +28,18 @@ function Damnificados() {
   const onFile = (e: ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
     if (!f) return;
-    if (f.type !== "application/pdf") { alert("Sube tu CV en formato PDF"); return; }
+    const ext = f.name.split(".").pop()?.toLowerCase() ?? "";
+    const allowedExts = ["pdf", "jpg", "jpeg", "png", "webp", "heic", "doc", "docx"];
+    const allowedTypes = [
+      "application/pdf",
+      "image/jpeg", "image/png", "image/webp", "image/heic",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+    if (!allowedExts.includes(ext) && !allowedTypes.includes(f.type)) {
+      alert("Por favor sube tu CV en formato PDF, imagen (JPG, PNG, WEBP) o Word (.doc, .docx)");
+      return;
+    }
     if (f.size > 5 * 1024 * 1024) { alert("Máximo 5MB"); return; }
     setFile(f);
   };
@@ -113,7 +124,7 @@ function Damnificados() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1.5">CV (opcional, PDF)</label>
+                <label className="block text-sm font-medium mb-1.5">CV (opcional, PDF, imagen o Word)</label>
                 {!file ? (
                   <div
                     onClick={() => inputRef.current?.click()}
@@ -121,8 +132,8 @@ function Damnificados() {
                   >
                     <Upload className="mx-auto w-8 h-8 text-muted-foreground mb-2" />
                     <p className="text-sm font-medium">Haz click para subir tu CV</p>
-                    <p className="text-xs text-muted-foreground mt-1">PDF · máx 5MB</p>
-                    <input ref={inputRef} type="file" accept=".pdf,application/pdf" onChange={onFile} className="hidden" />
+                    <p className="text-xs text-muted-foreground mt-1">PDF, imagen o Word · máx 5MB</p>
+                    <input ref={inputRef} type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,.heic,.doc,.docx,application/pdf,image/*,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={onFile} className="hidden" />
                   </div>
                 ) : (
                   <div className="flex items-center gap-3 rounded-2xl border border-border bg-bg-light p-4">
