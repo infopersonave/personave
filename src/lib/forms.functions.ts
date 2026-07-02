@@ -110,6 +110,9 @@ export const submitCV = createServerFn({ method: "POST" })
       oportunidades: String(data.get("oportunidades") ?? "")
         .trim()
         .slice(0, 2000),
+      origen: String(data.get("origen") ?? "")
+        .trim()
+        .slice(0, 50),
     };
   })
   .handler(async ({ data }) => {
