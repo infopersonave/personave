@@ -19,12 +19,21 @@ export const submitDamnificado = createServerFn({ method: "POST" })
     if (correo && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) throw new Error("Invalid email");
     const file = data.get("cv");
     let cvFile: File | null = null;
+    let cvExt = "";
     if (file instanceof File && file.size > 0) {
       if (file.size > 5 * 1024 * 1024) throw new Error("File exceeds 5MB");
       const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
-      if (ext !== "pdf") throw new Error("Invalid file type");
-      if (file.type && file.type !== "application/pdf") throw new Error("Invalid file type");
+      const allowedExts = ["pdf", "jpg", "jpeg", "png", "webp", "heic", "doc", "docx"];
+      const allowedTypes = [
+        "application/pdf",
+        "image/jpeg", "image/png", "image/webp", "image/heic",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ];
+      if (!allowedExts.includes(ext)) throw new Error("Invalid file type");
+      if (file.type && !allowedTypes.includes(file.type)) throw new Error("Invalid file type");
       cvFile = file;
+      cvExt = ext;
     }
     return { nombre, telefono, correo, ubicacion, que_sabe_hacer, disponibilidad, cvFile };
   })
@@ -33,7 +42,7 @@ export const submitDamnificado = createServerFn({ method: "POST" })
     if (data.cvFile) {
       try {
         const { uploadCVAndSign } = await import("./forms.server");
-        cv_url = await uploadCVAndSign(data.cvFile, "pdf", {
+        cv_url = await uploadCVAndSign(data.cvFile, cvExt || "pdf", {
           nombre: data.nombre,
           telefono: data.telefono,
           correo: data.correo,

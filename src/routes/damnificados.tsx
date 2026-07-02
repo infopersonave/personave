@@ -28,7 +28,18 @@ function Damnificados() {
   const onFile = (e: ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
     if (!f) return;
-    if (f.type !== "application/pdf") { alert("Sube tu CV en formato PDF"); return; }
+    const ext = f.name.split(".").pop()?.toLowerCase() ?? "";
+    const allowedExts = ["pdf", "jpg", "jpeg", "png", "webp", "heic", "doc", "docx"];
+    const allowedTypes = [
+      "application/pdf",
+      "image/jpeg", "image/png", "image/webp", "image/heic",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+    if (!allowedExts.includes(ext) && !allowedTypes.includes(f.type)) {
+      alert("Por favor sube tu CV en formato PDF, imagen (JPG, PNG, WEBP) o Word (.doc, .docx)");
+      return;
+    }
     if (f.size > 5 * 1024 * 1024) { alert("Máximo 5MB"); return; }
     setFile(f);
   };
