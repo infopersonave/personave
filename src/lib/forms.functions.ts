@@ -110,6 +110,9 @@ export const submitCV = createServerFn({ method: "POST" })
       oportunidades: String(data.get("oportunidades") ?? "")
         .trim()
         .slice(0, 2000),
+      origen: String(data.get("origen") ?? "")
+        .trim()
+        .slice(0, 50),
     };
   })
   .handler(async ({ data }) => {
@@ -120,6 +123,7 @@ export const submitCV = createServerFn({ method: "POST" })
       phone: data.phone,
       linkedin: data.linkedin,
       oportunidades: data.oportunidades,
+      origen: data.origen,
     };
 
     console.log("[submitCV] received file", {
