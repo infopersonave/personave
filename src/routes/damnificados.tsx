@@ -83,7 +83,7 @@ function Damnificados() {
               <Field name="nombre" label="Nombre completo *" required />
               <Field name="telefono" label="Teléfono / WhatsApp *" required placeholder="+58XXXXXXXXXX" />
               <Field name="correo" type="email" label="Correo (opcional)" />
-              <Field name="ubicacion" label="Zona / ubicación *" required placeholder="Ej: Caracas, El Hatillo" />
+              <Field name="ubicacion" label="Zona / ubicación *" required placeholder="Ej: La Guaira, Macuto" />
 
               <div>
                 <label className="block text-sm font-medium mb-1.5">¿Qué sabes hacer? / Experiencia *</label>
