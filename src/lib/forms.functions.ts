@@ -123,6 +123,7 @@ export const submitCV = createServerFn({ method: "POST" })
       phone: data.phone,
       linkedin: data.linkedin,
       oportunidades: data.oportunidades,
+      origen: data.origen,
     };
 
     console.log("[submitCV] received file", {
