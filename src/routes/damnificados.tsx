@@ -37,7 +37,7 @@ function Damnificados() {
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     ];
     if (!allowedExts.includes(ext) && !allowedTypes.includes(f.type)) {
-      alert("Por favor sube tu CV en formato PDF, imagen (JPG, PNG, WEBP) o Word (.doc, .docx)");
+      alert("Por favor sube tu curriculum u hoja de vida en formato PDF, imagen (JPG, PNG, WEBP) o Word (.doc, .docx)");
       return;
     }
     if (f.size > 5 * 1024 * 1024) { alert("Máximo 5MB"); return; }
@@ -124,14 +124,14 @@ function Damnificados() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1.5">CV (opcional, PDF, imagen o Word)</label>
+                <label className="block text-sm font-medium mb-1.5">Curriculum u hoja de vida (opcional, PDF, imagen o Word)</label>
                 {!file ? (
                   <div
                     onClick={() => inputRef.current?.click()}
                     className="cursor-pointer rounded-2xl border-2 border-dashed border-border p-6 text-center transition hover:border-primary/50 hover:bg-bg-light"
                   >
                     <Upload className="mx-auto w-8 h-8 text-muted-foreground mb-2" />
-                    <p className="text-sm font-medium">Haz click para subir tu CV</p>
+                    <p className="text-sm font-medium">Haz click para subir tu curriculum u hoja de vida</p>
                     <p className="text-xs text-muted-foreground mt-1">PDF, imagen o Word · máx 5MB</p>
                     <input ref={inputRef} type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,.heic,.doc,.docx,application/pdf,image/*,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={onFile} className="hidden" />
                   </div>
