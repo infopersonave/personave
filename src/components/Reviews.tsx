@@ -18,9 +18,7 @@ function Stars({ rating }: { rating: number }) {
       {[1, 2, 3, 4, 5].map((n) => (
         <Star
           key={n}
-          className="h-4 w-4"
-          fill={n <= rating ? "#1F3864" : "none"}
-          stroke="#1F3864"
+          className={`h-4 w-4 ${n <= rating ? "text-primary fill-primary" : "text-muted-foreground/30"}`}
           strokeWidth={1.5}
         />
       ))}
@@ -31,25 +29,17 @@ function Stars({ rating }: { rating: number }) {
 function ReviewCard({ r }: { r: Review }) {
   const isCandidato = r.tipo === "candidato";
   return (
-    <article
-      className="bg-white rounded-lg p-6 flex flex-col gap-3 shrink-0 w-[85%] sm:w-[380px] md:w-auto snap-center"
-      style={{ boxShadow: "0 2px 8px rgba(31, 56, 100, 0.08)", color: "#333333" }}
-    >
+    <article className="glass-strong rounded-2xl p-7 flex flex-col gap-3 shrink-0 w-[85%] sm:w-[380px] md:w-auto snap-center hover:-translate-y-1 transition-transform">
       <div className="flex items-start justify-between gap-3">
-        <h3 className="font-semibold text-base" style={{ color: "#1F3864" }}>
-          {r.nombre}
-        </h3>
-        <span
-          className="text-xs font-semibold px-2.5 py-1 rounded-full text-white shrink-0"
-          style={{ backgroundColor: "#1F3864" }}
-        >
+        <h3 className="font-bold text-lg">{r.nombre}</h3>
+        <span className="text-xs font-semibold px-3 py-1 rounded-full bg-gradient-brand text-white shrink-0">
           {isCandidato ? "Candidato" : "Empresa"}
         </span>
       </div>
       <Stars rating={r.rating} />
-      <p className="text-sm leading-relaxed">"{r.texto}"</p>
+      <p className="text-muted-foreground leading-relaxed">"{r.texto}"</p>
       {isCandidato && r.empresa_relacionada ? (
-        <p className="text-xs font-medium mt-auto pt-2" style={{ color: "#1F3864" }}>
+        <p className="text-sm font-medium mt-auto pt-2 text-gradient">
           Colocado en {r.empresa_relacionada}
         </p>
       ) : null}
@@ -85,22 +75,18 @@ export function Reviews() {
   if (!loading && reviews.length === 0) return null;
 
   return (
-    <section className="py-24" style={{ backgroundColor: "#DCE6F1" }}>
+    <section className="py-24 bg-bg-light">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold" style={{ color: "#1F3864" }}>
-            Lo que dicen de nosotros
+        <div className="text-center max-w-2xl mx-auto mb-14">
+          <h2 className="text-4xl md:text-5xl font-bold">
+            Lo que <span className="text-gradient">dicen de nosotros</span>
           </h2>
         </div>
 
         {loading ? (
           <div className="grid md:grid-cols-3 gap-5">
             {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                className="bg-white rounded-lg p-6 h-48 animate-pulse"
-                style={{ boxShadow: "0 2px 8px rgba(31, 56, 100, 0.08)" }}
-              />
+              <div key={i} className="glass-strong rounded-2xl p-7 h-48 animate-pulse" />
             ))}
           </div>
         ) : (
