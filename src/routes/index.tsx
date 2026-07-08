@@ -4,6 +4,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { CVUpload } from "@/components/CVUpload";
 import { FAQ } from "@/components/FAQ";
+import { Reviews } from "@/components/Reviews";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -160,6 +161,9 @@ function Index() {
           <FAQ />
         </div>
       </section>
+
+      {/* REVIEWS */}
+      <Reviews />
 
       {/* CTA */}
       <section className="py-24 bg-gradient-brand-soft">
