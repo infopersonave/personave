@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { CheckCircle2, X, BookOpen, Upload } from "lucide-react";
+import { CheckCircle2, X, Upload } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { getBcvEurRate, submitGuiaPurchase } from "@/lib/forms.functions";
 
@@ -56,15 +56,12 @@ export function GuiaCVCard({ variant = "inline" }: { variant?: "inline" | "page"
         style={{ background: "linear-gradient(135deg, #5B8AFF 0%, #8B5CF6 50%, #EC4899 100%)", fontFamily: "Outfit, system-ui, sans-serif" }}
       >
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-[8px] bg-white/20 backdrop-blur flex items-center justify-center shrink-0">
-            <BookOpen className="w-6 h-6 text-white" />
-          </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <h3 className="text-xl md:text-2xl font-bold">CV que Conecta</h3>
               <span className="text-[10px] uppercase tracking-wider bg-white/20 rounded-[8px] px-2 py-0.5">Opcional</span>
             </div>
-            <p className="text-sm text-white/90 mb-3">La guía digital para armar un CV que sí consigue entrevistas.</p>
+            <p className="text-sm text-white/90 mb-3">Guía práctica para estructurar tu currículum y destacar ante reclutadores.</p>
             <div className="flex flex-wrap items-center gap-3 mb-4">
               <span className="text-2xl font-bold">€{PRICE_EUR.toFixed(2)}</span>
               {loadingRate && <span className="text-xs text-white/80">Calculando Bs…</span>}
@@ -83,7 +80,7 @@ export function GuiaCVCard({ variant = "inline" }: { variant?: "inline" | "page"
               Comprar guía
             </button>
             {variant === "inline" && (
-              <p className="mt-3 text-xs text-white/80">Puedes saltar este paso y subir tu CV igual, sin comprar nada.</p>
+              <p className="mt-3 text-xs text-white/80">Este paso es opcional — puedes continuar sin adquirir la guía.</p>
             )}
           </div>
         </div>
