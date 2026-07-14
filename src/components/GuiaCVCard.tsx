@@ -80,7 +80,7 @@ export function GuiaCVCard({ variant = "inline" }: { variant?: "inline" | "page"
               Comprar guía
             </button>
             {variant === "inline" && (
-              <p className="mt-3 text-xs text-white/80">Puedes saltar este paso y subir tu CV igual, sin comprar nada.</p>
+              <p className="mt-3 text-xs text-white/80">Este paso es opcional — puedes continuar sin adquirir la guía.</p>
             )}
           </div>
         </div>
