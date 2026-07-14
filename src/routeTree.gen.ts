@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as GuiaRouteImport } from './routes/guia'
 import { Route as EmpresasRouteImport } from './routes/empresas'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DamnificadosIndexRouteImport } from './routes/damnificados.index'
 import { Route as DamnificadosInformalRouteImport } from './routes/damnificados.informal'
 import { Route as DamnificadosCandidatoRouteImport } from './routes/damnificados.candidato'
 
+const GuiaRoute = GuiaRouteImport.update({
+  id: '/guia',
+  path: '/guia',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EmpresasRoute = EmpresasRouteImport.update({
   id: '/empresas',
   path: '/empresas',
@@ -44,6 +50,7 @@ const DamnificadosCandidatoRoute = DamnificadosCandidatoRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/empresas': typeof EmpresasRoute
+  '/guia': typeof GuiaRoute
   '/damnificados/candidato': typeof DamnificadosCandidatoRoute
   '/damnificados/informal': typeof DamnificadosInformalRoute
   '/damnificados/': typeof DamnificadosIndexRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/empresas': typeof EmpresasRoute
+  '/guia': typeof GuiaRoute
   '/damnificados/candidato': typeof DamnificadosCandidatoRoute
   '/damnificados/informal': typeof DamnificadosInformalRoute
   '/damnificados': typeof DamnificadosIndexRoute
@@ -59,6 +67,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/empresas': typeof EmpresasRoute
+  '/guia': typeof GuiaRoute
   '/damnificados/candidato': typeof DamnificadosCandidatoRoute
   '/damnificados/informal': typeof DamnificadosInformalRoute
   '/damnificados/': typeof DamnificadosIndexRoute
@@ -68,6 +77,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/empresas'
+    | '/guia'
     | '/damnificados/candidato'
     | '/damnificados/informal'
     | '/damnificados/'
@@ -75,6 +85,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/empresas'
+    | '/guia'
     | '/damnificados/candidato'
     | '/damnificados/informal'
     | '/damnificados'
@@ -82,6 +93,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/empresas'
+    | '/guia'
     | '/damnificados/candidato'
     | '/damnificados/informal'
     | '/damnificados/'
@@ -90,6 +102,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   EmpresasRoute: typeof EmpresasRoute
+  GuiaRoute: typeof GuiaRoute
   DamnificadosCandidatoRoute: typeof DamnificadosCandidatoRoute
   DamnificadosInformalRoute: typeof DamnificadosInformalRoute
   DamnificadosIndexRoute: typeof DamnificadosIndexRoute
@@ -97,6 +110,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/guia': {
+      id: '/guia'
+      path: '/guia'
+      fullPath: '/guia'
+      preLoaderRoute: typeof GuiaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/empresas': {
       id: '/empresas'
       path: '/empresas'
@@ -138,6 +158,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   EmpresasRoute: EmpresasRoute,
+  GuiaRoute: GuiaRoute,
   DamnificadosCandidatoRoute: DamnificadosCandidatoRoute,
   DamnificadosInformalRoute: DamnificadosInformalRoute,
   DamnificadosIndexRoute: DamnificadosIndexRoute,
