@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { CheckCircle2, X, BookOpen, Upload } from "lucide-react";
+import { CheckCircle2, X, Upload } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { getBcvEurRate, submitGuiaPurchase } from "@/lib/forms.functions";
 
