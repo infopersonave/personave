@@ -8,8 +8,14 @@ export function Nav({ variant = "candidate" }: { variant?: "candidate" | "busine
         <Logo />
         <div className="flex items-center gap-3">
           <Link
-            to="/damnificados"
+            to="/guia"
             className="text-sm font-semibold text-white hover:text-white/80 transition"
+          >
+            Guía CV
+          </Link>
+          <Link
+            to="/damnificados"
+            className="text-sm font-semibold text-white hover:text-white/80 transition hidden sm:inline"
           >
             Damnificados
           </Link>

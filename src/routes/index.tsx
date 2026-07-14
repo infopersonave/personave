@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer";
 import { CVUpload } from "@/components/CVUpload";
 import { FAQ } from "@/components/FAQ";
 import { Reviews } from "@/components/Reviews";
+import { GuiaCVCard } from "@/components/GuiaCVCard";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -61,7 +62,8 @@ function Index() {
               ))}
             </div>
           </div>
-          <div className="lg:pl-8">
+          <div className="lg:pl-8 space-y-5">
+            <GuiaCVCard variant="inline" />
             <CVUpload />
           </div>
         </div>
