@@ -5,6 +5,25 @@ const BACKUP_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyQ0y9
 const MAKE_DAMNIFICADOS_WEBHOOK_URL = "https://hook.us2.make.com/qogs1f0mq820iihb66ubch7p3o0elond";
 const MAKE_GUIA_WEBHOOK_URL = "https://hook.us2.make.com/hbgmv6r16emddjx4o57r8yhiwk6bwhhd";
 
+export const getBcvEurRate = createServerFn({ method: "GET" }).handler(async () => {
+  const res = await fetch("https://ve.dolarapi.com/v1/dolares/oficial", { headers: { accept: "application/json" } });
+  // ve.dolarapi.com exposes /v1/dolares/oficial (USD BCV). For EUR use /v1/euros/oficial
+  let eur: number | null = null;
+  try {
+    const r2 = await fetch("https://ve.dolarapi.com/v1/euros/oficial", { headers: { accept: "application/json" } });
+    if (r2.ok) {
+      const j = await r2.json();
+      if (typeof j?.promedio === "number") eur = j.promedio;
+      else if (typeof j?.compra === "number") eur = j.compra;
+    }
+  } catch {}
+  if (!eur && res.ok) {
+    // Fallback: derive from USD rate * EUR/USD? Not accurate — just fail.
+  }
+  if (!eur || !isFinite(eur) || eur <= 0) throw new Error("No se pudo obtener la tasa EUR del BCV");
+  return { eur, fetched_at: new Date().toISOString() };
+});
+
 export const submitGuiaPurchase = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => {
     if (!(data instanceof FormData)) throw new Error("Expected FormData");
