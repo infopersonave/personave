@@ -3,6 +3,75 @@ import { createServerFn } from "@tanstack/react-start";
 const MAKE_CV_WEBHOOK_URL = "https://hook.us2.make.com/5hbzwu0mqd0r35vebv13lmtkqkhvgqdj";
 const BACKUP_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyQ0y9UUquM_DydCFOOhDtQ0GMjgEQoDI2CZAZxg4VluPYtTjUeOrHUqz7P3_vdtyLaDw/exec";
 const MAKE_DAMNIFICADOS_WEBHOOK_URL = "https://hook.us2.make.com/qogs1f0mq820iihb66ubch7p3o0elond";
+const MAKE_GUIA_WEBHOOK_URL = "https://hook.us2.make.com/hbgmv6r16emddjx4o57r8yhiwk6bwhhd";
+
+export const submitGuiaPurchase = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => {
+    if (!(data instanceof FormData)) throw new Error("Expected FormData");
+    const nombre = String(data.get("nombre") ?? "").trim().slice(0, 200);
+    const email = String(data.get("email") ?? "").trim().slice(0, 200);
+    const telefono = String(data.get("telefono") ?? "").trim().slice(0, 50);
+    const referencia_pago = String(data.get("referencia_pago") ?? "").trim().slice(0, 100);
+    const monto_bs = Number(String(data.get("monto_bs") ?? "0"));
+    if (!nombre || !email || !telefono || !referencia_pago) throw new Error("Missing required fields");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Invalid email");
+    const file = data.get("comprobante");
+    if (!(file instanceof File) || file.size === 0) throw new Error("Comprobante is required");
+    if (file.size > 10 * 1024 * 1024) throw new Error("Comprobante exceeds 10MB");
+    const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
+    const allowed = ["jpg", "jpeg", "png", "webp", "heic", "pdf"];
+    if (!allowed.includes(ext)) throw new Error("Invalid file type");
+    return { nombre, email, telefono, referencia_pago, monto_bs, file, ext };
+  })
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const submissionId = crypto.randomUUID();
+    const path = `submissions/${submissionId}/comprobante.${data.ext}`;
+    const bytes = new Uint8Array(await data.file.arrayBuffer());
+    const { error: upErr } = await supabaseAdmin.storage
+      .from("comprobantes")
+      .upload(path, bytes, { contentType: data.file.type || "application/octet-stream", upsert: false });
+    if (upErr) throw new Error(`Upload failed: ${upErr.message}`);
+
+    const metadataFile = new File(
+      [JSON.stringify({
+        nombre: data.nombre, email: data.email, telefono: data.telefono,
+        referencia_pago: data.referencia_pago, monto_bs: data.monto_bs,
+        comprobante_path: path, comprobante_filename: data.file.name,
+        created_at: new Date().toISOString(),
+      }, null, 2)],
+      "metadata.json",
+      { type: "application/json" },
+    );
+    await supabaseAdmin.storage
+      .from("comprobantes")
+      .upload(`submissions/${submissionId}/metadata.json`, metadataFile, { contentType: "application/json", upsert: false });
+
+    const { data: signed, error: signedErr } = await supabaseAdmin.storage
+      .from("comprobantes")
+      .createSignedUrl(path, 60 * 60 * 24 * 7);
+    if (signedErr || !signed) throw new Error("Could not create signed URL");
+
+    const payload = {
+      nombre: data.nombre,
+      email: data.email,
+      telefono: data.telefono,
+      monto_bs: data.monto_bs,
+      referencia_pago: data.referencia_pago,
+      comprobante_url: signed.signedUrl,
+    };
+
+    const res = await fetch(MAKE_GUIA_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      throw new Error(`Make webhook failed (status ${res.status}): ${text.slice(0, 200)}`);
+    }
+    return { success: true };
+  });
 
 export const submitDamnificado = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => {
