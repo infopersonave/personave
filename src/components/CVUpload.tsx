@@ -1,53 +1,79 @@
 import { useState, useRef, type ChangeEvent, type DragEvent, type FormEvent } from "react";
-import { Upload, FileText, CheckCircle2, X } from "lucide-react";
+import { Upload, FileText, CheckCircle2, X, Loader2, AlertCircle } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
-import { submitCV } from "@/lib/forms.functions";
+import { submitCV, uploadCVFile } from "@/lib/forms.functions";
+
+type UploadState =
+  | { status: "idle" }
+  | { status: "uploading"; file: File }
+  | { status: "done"; file: File; signedUrl: string; filename: string }
+  | { status: "error"; file: File; message: string };
 
 export function CVUpload({ origen }: { origen?: string } = {}) {
-  const [file, setFile] = useState<File | null>(null);
+  const [upload, setUpload] = useState<UploadState>({ status: "idle" });
   const [dragging, setDragging] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
+  const [attempted, setAttempted] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleFile = (f: File) => {
+  const doUpload = useServerFn(uploadCVFile);
+  const submit = useServerFn(submitCV);
+
+  const startUpload = async (f: File) => {
     const ext = f.name.split(".").pop()?.toLowerCase() ?? "";
     if (ext !== "pdf" && f.type !== "application/pdf") {
-      alert("Por favor sube tu CV en formato PDF");
+      setUpload({ status: "error", file: f, message: "Por favor sube tu CV en formato PDF." });
       return;
     }
     if (f.size > 5 * 1024 * 1024) {
-      alert("Máximo 5MB");
+      setUpload({ status: "error", file: f, message: "El archivo supera el máximo de 5MB." });
       return;
     }
-    setFile(f);
+    setUpload({ status: "uploading", file: f });
+    try {
+      const fd = new FormData();
+      fd.set("cv", f);
+      const res = await doUpload({ data: fd });
+      if (!res.signedUrl) throw new Error("No signed URL returned");
+      setUpload({ status: "done", file: f, signedUrl: res.signedUrl, filename: res.filename });
+    } catch (err) {
+      console.error(err);
+      setUpload({ status: "error", file: f, message: "No pudimos subir tu CV. Intenta de nuevo." });
+    }
   };
 
   const onDrop = (e: DragEvent) => {
     e.preventDefault();
     setDragging(false);
     const f = e.dataTransfer.files?.[0];
-    if (f) handleFile(f);
+    if (f) void startUpload(f);
   };
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
-    if (f) handleFile(f);
+    if (f) void startUpload(f);
   };
 
-  const submit = useServerFn(submitCV);
+  const clearFile = () => {
+    setUpload({ status: "idle" });
+    if (inputRef.current) inputRef.current.value = "";
+  };
+
+  const canSubmit = upload.status === "done" && !sending;
+
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!file) return;
+    setAttempted(true);
+    if (!canSubmit || upload.status !== "done") return;
     setSending(true);
-
     try {
       const form = e.target as HTMLFormElement;
       const formData = new FormData(form);
-      formData.set("cv", file);
-
+      formData.delete("cv");
+      formData.set("cv_url", upload.signedUrl);
+      formData.set("cv_filename", upload.filename);
       await submit({ data: formData });
-
       setSubmitted(true);
     } catch (err) {
       console.error(err);
@@ -65,10 +91,22 @@ export function CVUpload({ origen }: { origen?: string } = {}) {
         </div>
         <h3 className="text-2xl font-bold mb-2">¡Perfil recibido!</h3>
         <p className="text-muted-foreground mb-6">Nuestro equipo revisará tu perfil en 24-48 horas y te contactaremos con oportunidades reales.</p>
-        <button onClick={() => { setSubmitted(false); setFile(null); }} className="text-sm font-semibold text-gradient">Enviar otro</button>
+        <button onClick={() => { setSubmitted(false); clearFile(); }} className="text-sm font-semibold text-gradient">Enviar otro</button>
       </div>
     );
   }
+
+  const showFileError =
+    upload.status === "error" ||
+    (attempted && upload.status === "idle") ||
+    (attempted && upload.status === "uploading");
+
+  const fileErrorMsg =
+    upload.status === "error"
+      ? upload.message
+      : upload.status === "uploading"
+        ? "Espera a que termine la subida del CV antes de enviar."
+        : "Debes adjuntar tu CV en PDF para poder enviar el formulario.";
 
   return (
     <div className="glass-strong rounded-3xl p-7 md:p-8 shadow-card">
@@ -87,34 +125,72 @@ export function CVUpload({ origen }: { origen?: string } = {}) {
 
       <form onSubmit={onSubmit} className="space-y-4">
         {origen ? <input type="hidden" name="origen" value={origen} /> : null}
-        {!file ? (
-          <div
-            onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
-            onDragLeave={() => setDragging(false)}
-            onDrop={onDrop}
-            onClick={() => inputRef.current?.click()}
-            className={`cursor-pointer rounded-2xl border-2 border-dashed p-8 text-center transition-all ${dragging ? "border-primary bg-gradient-brand-soft scale-[1.02]" : "border-border hover:border-primary/50 hover:bg-bg-light"}`}
-          >
-            <Upload className="mx-auto w-10 h-10 text-muted-foreground mb-3" />
-            <p className="font-semibold">Arrastra tu CV aquí</p>
-            <p className="text-sm text-muted-foreground mt-1">o haz click para seleccionar</p>
-            <p className="text-xs text-muted-foreground mt-3">PDF · máx 5MB</p>
-            <input ref={inputRef} type="file" accept=".pdf,application/pdf" onChange={onChange} className="hidden" />
-          </div>
+
+        {upload.status === "idle" || upload.status === "error" ? (
+          <>
+            <div
+              onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+              onDragLeave={() => setDragging(false)}
+              onDrop={onDrop}
+              onClick={() => inputRef.current?.click()}
+              className={`cursor-pointer rounded-2xl border-2 border-dashed p-8 text-center transition-all ${
+                showFileError
+                  ? "border-red-400 bg-red-50"
+                  : dragging
+                    ? "border-primary bg-gradient-brand-soft scale-[1.02]"
+                    : "border-border hover:border-primary/50 hover:bg-bg-light"
+              }`}
+            >
+              <Upload className="mx-auto w-10 h-10 text-muted-foreground mb-3" />
+              <p className="font-semibold">Arrastra tu CV aquí</p>
+              <p className="text-sm text-muted-foreground mt-1">o haz click para seleccionar</p>
+              <p className="text-xs text-muted-foreground mt-3">PDF · máx 5MB</p>
+              <input ref={inputRef} type="file" accept=".pdf,application/pdf" onChange={onChange} className="hidden" />
+            </div>
+            {showFileError && (
+              <p className="flex items-center gap-1.5 text-xs text-red-600">
+                <AlertCircle className="w-3.5 h-3.5" />
+                {fileErrorMsg}
+              </p>
+            )}
+          </>
         ) : (
           <>
-            <div className="flex items-center gap-3 rounded-2xl border border-border bg-bg-light p-4">
+            <div
+              className={`flex items-center gap-3 rounded-2xl border p-4 ${
+                upload.status === "done" ? "border-emerald-500 bg-emerald-50" : "border-border bg-bg-light"
+              }`}
+            >
               <div className="w-10 h-10 rounded-xl bg-gradient-brand flex items-center justify-center shrink-0">
-                <FileText className="w-5 h-5 text-white" />
+                {upload.status === "uploading" ? (
+                  <Loader2 className="w-5 h-5 text-white animate-spin" />
+                ) : (
+                  <FileText className="w-5 h-5 text-white" />
+                )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold truncate">{file.name}</p>
-                <p className="text-xs text-muted-foreground">{(file.size / 1024).toFixed(0)} KB</p>
+                <p className="text-sm font-semibold truncate">{upload.file.name}</p>
+                <p className="text-xs text-muted-foreground">
+                  {upload.status === "uploading"
+                    ? "Subiendo CV..."
+                    : `Listo · ${(upload.file.size / 1024).toFixed(0)} KB`}
+                </p>
               </div>
-              <button type="button" onClick={() => setFile(null)} className="p-1.5 rounded-lg hover:bg-background">
+              <button
+                type="button"
+                onClick={clearFile}
+                disabled={upload.status === "uploading" || sending}
+                className="p-1.5 rounded-lg hover:bg-background disabled:opacity-40 disabled:cursor-not-allowed"
+              >
                 <X className="w-4 h-4" />
               </button>
             </div>
+            {attempted && upload.status === "uploading" && (
+              <p className="flex items-center gap-1.5 text-xs text-red-600">
+                <AlertCircle className="w-3.5 h-3.5" />
+                Espera a que termine la subida del CV antes de enviar.
+              </p>
+            )}
 
             <Input name="name" label="Nombre completo *" required />
             <Input name="email" type="email" label="Email *" required />
@@ -136,8 +212,17 @@ export function CVUpload({ origen }: { origen?: string } = {}) {
               <textarea name="oportunidades" rows={3} className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20" />
             </div>
 
-            <button type="submit" disabled={sending} className="w-full bg-gradient-brand text-white font-semibold py-3.5 rounded-xl shadow-glow hover:shadow-xl transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed">
-              {sending ? "Enviando..." : "Enviar mi perfil"}
+            <button
+              type="submit"
+              disabled={!canSubmit}
+              aria-disabled={!canSubmit}
+              className="w-full bg-gradient-brand text-white font-semibold py-3.5 rounded-xl shadow-glow hover:shadow-xl transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-glow"
+            >
+              {sending
+                ? "Enviando..."
+                : upload.status === "uploading"
+                  ? "Subiendo CV..."
+                  : "Enviar mi perfil"}
             </button>
           </>
         )}
