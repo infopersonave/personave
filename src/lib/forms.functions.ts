@@ -24,23 +24,16 @@ export const getBcvEurRate = createServerFn({ method: "GET" }).handler(async () 
   return { eur, fetched_at: new Date().toISOString() };
 });
 
-export const submitGuiaPurchase = createServerFn({ method: "POST" })
+export const uploadComprobante = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => {
     if (!(data instanceof FormData)) throw new Error("Expected FormData");
-    const nombre = String(data.get("nombre") ?? "").trim().slice(0, 200);
-    const email = String(data.get("email") ?? "").trim().slice(0, 200);
-    const telefono = String(data.get("telefono") ?? "").trim().slice(0, 50);
-    const referencia_pago = String(data.get("referencia_pago") ?? "").trim().slice(0, 100);
-    const monto_bs = Number(String(data.get("monto_bs") ?? "0"));
-    if (!nombre || !email || !telefono || !referencia_pago) throw new Error("Missing required fields");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Invalid email");
     const file = data.get("comprobante");
     if (!(file instanceof File) || file.size === 0) throw new Error("Comprobante is required");
     if (file.size > 10 * 1024 * 1024) throw new Error("Comprobante exceeds 10MB");
     const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
     const allowed = ["jpg", "jpeg", "png", "webp", "heic", "pdf"];
     if (!allowed.includes(ext)) throw new Error("Invalid file type");
-    return { nombre, email, telefono, referencia_pago, monto_bs, file, ext };
+    return { file, ext };
   })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -51,12 +44,37 @@ export const submitGuiaPurchase = createServerFn({ method: "POST" })
       .from("comprobantes")
       .upload(path, bytes, { contentType: data.file.type || "application/octet-stream", upsert: false });
     if (upErr) throw new Error(`Upload failed: ${upErr.message}`);
+    const { data: signed, error: signedErr } = await supabaseAdmin.storage
+      .from("comprobantes")
+      .createSignedUrl(path, 60 * 60 * 24 * 7);
+    if (signedErr || !signed) throw new Error("Could not create signed URL");
+    return { submissionId, path, filename: data.file.name, signedUrl: signed.signedUrl };
+  });
 
+export const submitGuiaPurchase = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => {
+    if (!(data instanceof FormData)) throw new Error("Expected FormData");
+    const nombre = String(data.get("nombre") ?? "").trim().slice(0, 200);
+    const email = String(data.get("email") ?? "").trim().slice(0, 200);
+    const telefono = String(data.get("telefono") ?? "").trim().slice(0, 50);
+    const referencia_pago = String(data.get("referencia_pago") ?? "").trim().slice(0, 100);
+    const monto_bs = Number(String(data.get("monto_bs") ?? "0"));
+    const submissionId = String(data.get("submission_id") ?? "").trim();
+    const comprobante_path = String(data.get("comprobante_path") ?? "").trim();
+    const comprobante_url = String(data.get("comprobante_url") ?? "").trim();
+    const comprobante_filename = String(data.get("comprobante_filename") ?? "").trim();
+    if (!nombre || !email || !telefono || !referencia_pago) throw new Error("Missing required fields");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Invalid email");
+    if (!submissionId || !comprobante_path || !comprobante_url) throw new Error("Comprobante upload not completed");
+    return { nombre, email, telefono, referencia_pago, monto_bs, submissionId, comprobante_path, comprobante_url, comprobante_filename };
+  })
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const metadataFile = new File(
       [JSON.stringify({
         nombre: data.nombre, email: data.email, telefono: data.telefono,
         referencia_pago: data.referencia_pago, monto_bs: data.monto_bs,
-        comprobante_path: path, comprobante_filename: data.file.name,
+        comprobante_path: data.comprobante_path, comprobante_filename: data.comprobante_filename,
         created_at: new Date().toISOString(),
       }, null, 2)],
       "metadata.json",
@@ -64,12 +82,7 @@ export const submitGuiaPurchase = createServerFn({ method: "POST" })
     );
     await supabaseAdmin.storage
       .from("comprobantes")
-      .upload(`submissions/${submissionId}/metadata.json`, metadataFile, { contentType: "application/json", upsert: false });
-
-    const { data: signed, error: signedErr } = await supabaseAdmin.storage
-      .from("comprobantes")
-      .createSignedUrl(path, 60 * 60 * 24 * 7);
-    if (signedErr || !signed) throw new Error("Could not create signed URL");
+      .upload(`submissions/${data.submissionId}/metadata.json`, metadataFile, { contentType: "application/json", upsert: true });
 
     const payload = {
       nombre: data.nombre,
@@ -77,7 +90,7 @@ export const submitGuiaPurchase = createServerFn({ method: "POST" })
       telefono: data.telefono,
       monto_bs: data.monto_bs,
       referencia_pago: data.referencia_pago,
-      comprobante_url: signed.signedUrl,
+      comprobante_url: data.comprobante_url,
     };
 
     const res = await fetch(MAKE_GUIA_WEBHOOK_URL, {
