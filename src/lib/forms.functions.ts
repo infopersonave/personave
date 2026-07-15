@@ -179,7 +179,7 @@ export const submitDamnificado = createServerFn({ method: "POST" })
     return { success: true, cv_url };
   });
 
-export const submitCV = createServerFn({ method: "POST" })
+export const uploadCVFile = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => {
     if (!(data instanceof FormData)) throw new Error("Expected FormData");
     const file = data.get("cv");
@@ -189,63 +189,47 @@ export const submitCV = createServerFn({ method: "POST" })
     const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
     if (ext !== "pdf") throw new Error("Invalid file type");
     if (file.type && file.type !== "application/pdf") throw new Error("Invalid file type");
-    const name = String(data.get("name") ?? "")
-      .trim()
-      .slice(0, 200);
-    const email = String(data.get("email") ?? "")
-      .trim()
-      .slice(0, 200);
-    if (!name || !email) throw new Error("Name and email are required");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Invalid email");
-    return {
-      file,
-      ext,
-      name,
-      email,
-      phone: String(data.get("phone") ?? "")
-        .trim()
-        .slice(0, 50),
-      linkedin: String(data.get("linkedin") ?? "")
-        .trim()
-        .slice(0, 300),
-      oportunidades: String(data.get("oportunidades") ?? "")
-        .trim()
-        .slice(0, 2000),
-      origen: String(data.get("origen") ?? "")
-        .trim()
-        .slice(0, 50),
-    };
+    return { file, ext };
   })
   .handler(async ({ data }) => {
     const { uploadCVAndSign } = await import("./forms.server");
-    const metadata = {
+    const signedUrl = await uploadCVAndSign(data.file, data.ext, {
+      uploaded_at: new Date().toISOString(),
+    });
+    return { signedUrl, filename: data.file.name };
+  });
+
+export const submitCV = createServerFn({ method: "POST" })
+  .inputValidator((data: unknown) => {
+    if (!(data instanceof FormData)) throw new Error("Expected FormData");
+    const cv_url = String(data.get("cv_url") ?? "").trim();
+    const cv_filename = String(data.get("cv_filename") ?? "").trim().slice(0, 300);
+    if (!cv_url || !cv_filename) throw new Error("CV upload not completed");
+    const name = String(data.get("name") ?? "").trim().slice(0, 200);
+    const email = String(data.get("email") ?? "").trim().slice(0, 200);
+    if (!name || !email) throw new Error("Name and email are required");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Invalid email");
+    return {
+      cv_url,
+      cv_filename,
+      name,
+      email,
+      phone: String(data.get("phone") ?? "").trim().slice(0, 50),
+      linkedin: String(data.get("linkedin") ?? "").trim().slice(0, 300),
+      oportunidades: String(data.get("oportunidades") ?? "").trim().slice(0, 2000),
+      origen: String(data.get("origen") ?? "").trim().slice(0, 50),
+    };
+  })
+  .handler(async ({ data }) => {
+    const payload = {
       name: data.name,
       email: data.email,
       phone: data.phone,
       linkedin: data.linkedin,
       oportunidades: data.oportunidades,
       origen: data.origen,
-    };
-
-    console.log("[submitCV] received file", {
-      name: data.file.name,
-      size: data.file.size,
-      type: data.file.type,
-      ext: data.ext,
-    });
-
-    let signedUrl = "";
-    try {
-      signedUrl = await uploadCVAndSign(data.file, data.ext, metadata);
-      console.log("[submitCV] upload OK", { signedUrl, filename: data.file.name });
-    } catch (e) {
-      console.error("[submitCV] upload FAILED", e);
-    }
-
-    const payload = {
-      ...metadata,
-      cv_url: signedUrl,
-      cv_filename: data.file.name,
+      cv_url: data.cv_url,
+      cv_filename: data.cv_filename,
     };
 
     const res = await fetch(MAKE_CV_WEBHOOK_URL, {
@@ -261,9 +245,6 @@ export const submitCV = createServerFn({ method: "POST" })
       throw new Error(`Make webhook failed (status ${res.status}): ${text.slice(0, 200)}`);
     }
 
-    // Backup: send a copy to Google Sheet. We await it so the serverless
-    // function doesn't terminate before the request completes, but errors
-    // here must NEVER break or throw in the main flow.
     try {
       const backupRes = await fetch(BACKUP_SHEET_WEBHOOK_URL, {
         method: "POST",
@@ -271,7 +252,7 @@ export const submitCV = createServerFn({ method: "POST" })
         body: JSON.stringify({
           nombre: data.name,
           email: data.email,
-          cv_url: signedUrl,
+          cv_url: data.cv_url,
           linkedin: data.linkedin || "",
           fecha: new Date().toISOString(),
         }),
@@ -281,8 +262,9 @@ export const submitCV = createServerFn({ method: "POST" })
       console.error("[backup-sheet] fetch failed", e);
     }
 
-    return { success: true, signedUrl, filename: data.file.name };
+    return { success: true, signedUrl: data.cv_url, filename: data.cv_filename };
   });
+
 
 export const submitDemo = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => {
