@@ -55,9 +55,14 @@ export async function submitWeb3Forms(fields: Record<string, string>, accessKey?
   console.log("[web3forms] SUCCESS confirmed", { status: res.status, message: data.message });
 }
 
+// Base URL for the public CV proxy endpoint. Falls back to the primary
+// custom domain so links stay stable across preview/prod builds.
+const PUBLIC_SITE_URL = (process.env.SITE_URL ?? "https://persona.com.ve").replace(/\/$/, "");
+
 export async function uploadCVAndSign(file: File, ext: string, metadata: Record<string, string>) {
   const submissionId = crypto.randomUUID();
-  const path = `submissions/${submissionId}/cv.${ext}`;
+  const filename = `cv.${ext}`;
+  const path = `submissions/${submissionId}/${filename}`;
   const bytes = new Uint8Array(await file.arrayBuffer());
   console.log("[uploadCVAndSign] uploading", {
     path,
@@ -65,7 +70,6 @@ export async function uploadCVAndSign(file: File, ext: string, metadata: Record<
     incomingFileSize: file.size,
     incomingFileType: file.type,
     bytesLength: bytes.length,
-    firstBytes: new TextDecoder().decode(bytes.slice(0, 16)),
   });
   const { error: uploadError } = await supabaseAdmin.storage
     .from("cvs")
@@ -88,9 +92,8 @@ export async function uploadCVAndSign(file: File, ext: string, metadata: Record<
     });
   if (metadataError) throw new Error(`Metadata upload failed: ${metadataError.message}`);
 
-  const { data: signed, error: signedError } = await supabaseAdmin.storage
-    .from("cvs")
-    .createSignedUrl(path, 60 * 60 * 24 * 30);
-  if (signedError || !signed) throw new Error("Could not create signed URL");
-  return signed.signedUrl;
+  // Return a permanent public URL that streams the file through our server route.
+  // The bucket itself stays private (no anon INSERT/UPDATE/DELETE) — see the
+  // storage.objects RLS policies added in the accompanying migration.
+  return `${PUBLIC_SITE_URL}/api/public/cv/${submissionId}/${filename}`;
 }
