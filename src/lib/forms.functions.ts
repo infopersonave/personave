@@ -277,6 +277,7 @@ export const submitDemo = createServerFn({ method: "POST" })
     if (!out.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(out.email)) {
       throw new Error("Invalid email");
     }
+    if (!out.telefono) throw new Error("Teléfono de contacto es obligatorio");
     if (!out.posicion || !out.skills_requeridos) {
       throw new Error("Posición y skills requeridos son obligatorios");
     }
