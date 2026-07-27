@@ -14,6 +14,249 @@ export type Database = {
   }
   public: {
     Tables: {
+      busquedas: {
+        Row: {
+          anos_experiencia: number | null
+          cargo: string | null
+          created_at: string
+          descripcion_rol: string | null
+          email: string | null
+          empresa: string
+          estado: string
+          id: string
+          industria_principal: string | null
+          modalidad: string | null
+          nombre_contacto: string | null
+          num_vacantes: number | null
+          posicion_buscada: string | null
+          rango_salarial: string | null
+          reporte_matches_ia: string | null
+          seniority: string | null
+          skills_deseables: string | null
+          skills_requeridos: string | null
+          telefono: string | null
+          ubicacion: string | null
+        }
+        Insert: {
+          anos_experiencia?: number | null
+          cargo?: string | null
+          created_at?: string
+          descripcion_rol?: string | null
+          email?: string | null
+          empresa: string
+          estado?: string
+          id?: string
+          industria_principal?: string | null
+          modalidad?: string | null
+          nombre_contacto?: string | null
+          num_vacantes?: number | null
+          posicion_buscada?: string | null
+          rango_salarial?: string | null
+          reporte_matches_ia?: string | null
+          seniority?: string | null
+          skills_deseables?: string | null
+          skills_requeridos?: string | null
+          telefono?: string | null
+          ubicacion?: string | null
+        }
+        Update: {
+          anos_experiencia?: number | null
+          cargo?: string | null
+          created_at?: string
+          descripcion_rol?: string | null
+          email?: string | null
+          empresa?: string
+          estado?: string
+          id?: string
+          industria_principal?: string | null
+          modalidad?: string | null
+          nombre_contacto?: string | null
+          num_vacantes?: number | null
+          posicion_buscada?: string | null
+          rango_salarial?: string | null
+          reporte_matches_ia?: string | null
+          seniority?: string | null
+          skills_deseables?: string | null
+          skills_requeridos?: string | null
+          telefono?: string | null
+          ubicacion?: string | null
+        }
+        Relationships: []
+      }
+      candidatos: {
+        Row: {
+          anos_experiencia: number | null
+          created_at: string
+          email: string | null
+          estado: string
+          id: string
+          industria_principal: string | null
+          link_cv: string | null
+          linkedin: string | null
+          nombre_completo: string
+          origen: string | null
+          resumen_ia: string | null
+          skills: string | null
+          telefono: string | null
+          ubicacion: string | null
+        }
+        Insert: {
+          anos_experiencia?: number | null
+          created_at?: string
+          email?: string | null
+          estado?: string
+          id?: string
+          industria_principal?: string | null
+          link_cv?: string | null
+          linkedin?: string | null
+          nombre_completo: string
+          origen?: string | null
+          resumen_ia?: string | null
+          skills?: string | null
+          telefono?: string | null
+          ubicacion?: string | null
+        }
+        Update: {
+          anos_experiencia?: number | null
+          created_at?: string
+          email?: string | null
+          estado?: string
+          id?: string
+          industria_principal?: string | null
+          link_cv?: string | null
+          linkedin?: string | null
+          nombre_completo?: string
+          origen?: string | null
+          resumen_ia?: string | null
+          skills?: string | null
+          telefono?: string | null
+          ubicacion?: string | null
+        }
+        Relationships: []
+      }
+      compras_guia: {
+        Row: {
+          comprobante_url: string | null
+          created_at: string
+          email: string | null
+          enviado: boolean
+          estado: string
+          fecha: string
+          id: string
+          monto_bs: number | null
+          nombre: string | null
+          referencia_pago: string | null
+          respuesta_envio: string | null
+          telefono: string | null
+        }
+        Insert: {
+          comprobante_url?: string | null
+          created_at?: string
+          email?: string | null
+          enviado?: boolean
+          estado?: string
+          fecha?: string
+          id?: string
+          monto_bs?: number | null
+          nombre?: string | null
+          referencia_pago?: string | null
+          respuesta_envio?: string | null
+          telefono?: string | null
+        }
+        Update: {
+          comprobante_url?: string | null
+          created_at?: string
+          email?: string | null
+          enviado?: boolean
+          estado?: string
+          fecha?: string
+          id?: string
+          monto_bs?: number | null
+          nombre?: string | null
+          referencia_pago?: string | null
+          respuesta_envio?: string | null
+          telefono?: string | null
+        }
+        Relationships: []
+      }
+      damnificados: {
+        Row: {
+          categoria: string | null
+          correo: string | null
+          cv_link: string | null
+          disponibilidad: string | null
+          fecha_registro: string
+          id: string
+          nombre_completo: string | null
+          que_sabe_hacer: string | null
+          telefono: string | null
+          zona_ubicacion: string | null
+        }
+        Insert: {
+          categoria?: string | null
+          correo?: string | null
+          cv_link?: string | null
+          disponibilidad?: string | null
+          fecha_registro?: string
+          id?: string
+          nombre_completo?: string | null
+          que_sabe_hacer?: string | null
+          telefono?: string | null
+          zona_ubicacion?: string | null
+        }
+        Update: {
+          categoria?: string | null
+          correo?: string | null
+          cv_link?: string | null
+          disponibilidad?: string | null
+          fecha_registro?: string
+          id?: string
+          nombre_completo?: string | null
+          que_sabe_hacer?: string | null
+          telefono?: string | null
+          zona_ubicacion?: string | null
+        }
+        Relationships: []
+      }
+      matching_results: {
+        Row: {
+          busqueda_id: string | null
+          candidato_id: string | null
+          created_at: string
+          id: string
+          nivel_match: string | null
+        }
+        Insert: {
+          busqueda_id?: string | null
+          candidato_id?: string | null
+          created_at?: string
+          id?: string
+          nivel_match?: string | null
+        }
+        Update: {
+          busqueda_id?: string | null
+          candidato_id?: string | null
+          created_at?: string
+          id?: string
+          nivel_match?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "matching_results_busqueda_id_fkey"
+            columns: ["busqueda_id"]
+            isOneToOne: false
+            referencedRelation: "busquedas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "matching_results_candidato_id_fkey"
+            columns: ["candidato_id"]
+            isOneToOne: false
+            referencedRelation: "candidatos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           created_at: string
