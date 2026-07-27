@@ -1,0 +1,1 @@
+ALTER TABLE public.candidatos ADD COLUMN oportunidades_persona text;
