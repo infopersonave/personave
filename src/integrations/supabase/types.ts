@@ -94,6 +94,7 @@ export type Database = {
           link_cv: string | null
           linkedin: string | null
           nombre_completo: string
+          oportunidades_persona: string | null
           origen: string | null
           resumen_ia: string | null
           skills: string | null
@@ -110,6 +111,7 @@ export type Database = {
           link_cv?: string | null
           linkedin?: string | null
           nombre_completo: string
+          oportunidades_persona?: string | null
           origen?: string | null
           resumen_ia?: string | null
           skills?: string | null
@@ -126,6 +128,7 @@ export type Database = {
           link_cv?: string | null
           linkedin?: string | null
           nombre_completo?: string
+          oportunidades_persona?: string | null
           origen?: string | null
           resumen_ia?: string | null
           skills?: string | null
