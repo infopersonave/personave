@@ -87,6 +87,7 @@ export type Database = {
         Row: {
           anos_experiencia: number | null
           created_at: string
+          edad: number | null
           email: string | null
           estado: string
           id: string
@@ -96,7 +97,10 @@ export type Database = {
           nombre_completo: string
           oportunidades_persona: string | null
           origen: string | null
+          pais: string | null
+          region: string | null
           resumen_ia: string | null
+          salario_esperado_usd: number | null
           skills: string | null
           telefono: string | null
           ubicacion: string | null
@@ -104,6 +108,7 @@ export type Database = {
         Insert: {
           anos_experiencia?: number | null
           created_at?: string
+          edad?: number | null
           email?: string | null
           estado?: string
           id?: string
@@ -113,7 +118,10 @@ export type Database = {
           nombre_completo: string
           oportunidades_persona?: string | null
           origen?: string | null
+          pais?: string | null
+          region?: string | null
           resumen_ia?: string | null
+          salario_esperado_usd?: number | null
           skills?: string | null
           telefono?: string | null
           ubicacion?: string | null
@@ -121,6 +129,7 @@ export type Database = {
         Update: {
           anos_experiencia?: number | null
           created_at?: string
+          edad?: number | null
           email?: string | null
           estado?: string
           id?: string
@@ -130,7 +139,10 @@ export type Database = {
           nombre_completo?: string
           oportunidades_persona?: string | null
           origen?: string | null
+          pais?: string | null
+          region?: string | null
           resumen_ia?: string | null
+          salario_esperado_usd?: number | null
           skills?: string | null
           telefono?: string | null
           ubicacion?: string | null
