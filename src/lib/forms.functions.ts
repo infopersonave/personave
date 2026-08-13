@@ -209,11 +209,22 @@ export const submitCV = createServerFn({ method: "POST" })
     const email = String(data.get("email") ?? "").trim().slice(0, 200);
     if (!name || !email) throw new Error("Name and email are required");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Invalid email");
+    const edad = Number(String(data.get("edad") ?? ""));
+    const salario_esperado_usd = Number(String(data.get("salario_esperado_usd") ?? ""));
+    const pais = String(data.get("pais") ?? "").trim().slice(0, 100);
+    const region = String(data.get("region") ?? "").trim().slice(0, 100);
+    if (!Number.isFinite(edad) || edad < 16 || edad > 80) throw new Error("Edad inválida");
+    if (!Number.isFinite(salario_esperado_usd) || salario_esperado_usd < 0) throw new Error("Salario esperado inválido");
+    if (!pais || !region) throw new Error("País y estado/provincia son obligatorios");
     return {
       cv_url,
       cv_filename,
       name,
       email,
+      edad,
+      salario_esperado_usd,
+      pais,
+      region,
       phone: String(data.get("phone") ?? "").trim().slice(0, 50),
       linkedin: String(data.get("linkedin") ?? "").trim().slice(0, 300),
       oportunidades: String(data.get("oportunidades") ?? "").trim().slice(0, 2000),
@@ -228,9 +239,34 @@ export const submitCV = createServerFn({ method: "POST" })
       linkedin: data.linkedin,
       oportunidades: data.oportunidades,
       origen: data.origen,
+      edad: data.edad,
+      salario_esperado_usd: data.salario_esperado_usd,
+      pais: data.pais,
+      region: data.region,
       cv_url: data.cv_url,
       cv_filename: data.cv_filename,
     };
+
+    try {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { error } = await supabaseAdmin.from("candidatos").insert({
+        nombre_completo: data.name,
+        email: data.email,
+        telefono: data.phone,
+        linkedin: data.linkedin,
+        origen: data.origen || null,
+        oportunidades_persona: data.oportunidades,
+        link_cv: data.cv_url,
+        edad: data.edad,
+        salario_esperado_usd: data.salario_esperado_usd,
+        pais: data.pais,
+        region: data.region,
+        ubicacion: `${data.region}, ${data.pais}`,
+      });
+      if (error) console.error("[candidatos insert]", error.message);
+    } catch (e) {
+      console.error("[candidatos insert] failed", e);
+    }
 
     const res = await fetch(MAKE_CV_WEBHOOK_URL, {
       method: "POST",

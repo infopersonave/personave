@@ -9,7 +9,20 @@ type UploadState =
   | { status: "done"; file: File; signedUrl: string; filename: string }
   | { status: "error"; file: File; message: string };
 
+const PAISES = [
+  "Venezuela", "Colombia", "Perú", "Chile", "Argentina", "España",
+  "Estados Unidos", "México", "Ecuador", "Panamá", "Otro",
+] as const;
+
+const ESTADOS_VE = [
+  "Amazonas", "Anzoátegui", "Apure", "Aragua", "Barinas", "Bolívar", "Carabobo",
+  "Cojedes", "Delta Amacuro", "Distrito Capital", "Falcón", "Guárico", "La Guaira",
+  "Lara", "Mérida", "Miranda", "Monagas", "Nueva Esparta", "Portuguesa", "Sucre",
+  "Táchira", "Trujillo", "Yaracuy", "Zulia", "Dependencias Federales",
+] as const;
+
 export function CVUpload({ origen }: { origen?: string } = {}) {
+  const [pais, setPais] = useState<string>("Venezuela");
   const [upload, setUpload] = useState<UploadState>({ status: "idle" });
   const [dragging, setDragging] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -207,10 +220,56 @@ export function CVUpload({ origen }: { origen?: string } = {}) {
               help="Ingresa tu número con código de país, sin espacios ni guiones. Ejemplo: +58XXXXXXXXXX"
             />
             <Input name="linkedin" label="LinkedIn (opcional)" />
+            <Input name="edad" type="number" label="Edad *" required min={16} max={80} />
+            <Input
+              name="salario_esperado_usd"
+              type="number"
+              label="¿Cuánto esperas ganar aprox? (USD mensuales) *"
+              required
+              min={0}
+              placeholder="Ej: 800"
+            />
+            <div>
+              <label className="block text-sm font-medium mb-1.5">País *</label>
+              <select
+                name="pais"
+                required
+                value={pais}
+                onChange={(e) => setPais(e.target.value)}
+                className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+              >
+                {PAISES.map((p) => (
+                  <option key={p} value={p}>{p}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Estado / Provincia *</label>
+              {pais === "Venezuela" ? (
+                <select
+                  name="region"
+                  required
+                  defaultValue=""
+                  className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                >
+                  <option value="" disabled>Selecciona tu estado</option>
+                  {ESTADOS_VE.map((e) => (
+                    <option key={e} value={e}>{e}</option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  name="region"
+                  required
+                  className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
+              )}
+            </div>
             <div>
               <label className="block text-sm font-medium mb-1.5">¿Qué oportunidades buscas?</label>
               <textarea name="oportunidades" rows={3} className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20" />
             </div>
+
 
             <button
               type="submit"
