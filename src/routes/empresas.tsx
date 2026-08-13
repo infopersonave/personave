@@ -253,6 +253,20 @@ function DemoForm() {
         </select>
       </div>
 
+      <div>
+        <label className="block text-sm font-medium mb-1.5">Género buscado para la posición (opcional)</label>
+        <select
+          name="genero_buscado"
+          required
+          defaultValue="Indiferente"
+          className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+        >
+          <option value="Indiferente">Indiferente</option>
+          <option value="Masculino">Masculino</option>
+          <option value="Femenino">Femenino</option>
+        </select>
+      </div>
+
       <Field name="num_vacantes" label="Número de vacantes *" type="number" min="1" required placeholder="Ej: 2" />
 
       <Field name="ubicacion" label="Ubicación *" required placeholder="Ej: Caracas, Venezuela / Remoto global" />
