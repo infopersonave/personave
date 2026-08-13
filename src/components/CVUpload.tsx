@@ -9,7 +9,20 @@ type UploadState =
   | { status: "done"; file: File; signedUrl: string; filename: string }
   | { status: "error"; file: File; message: string };
 
+const PAISES = [
+  "Venezuela", "Colombia", "Perú", "Chile", "Argentina", "España",
+  "Estados Unidos", "México", "Ecuador", "Panamá", "Otro",
+] as const;
+
+const ESTADOS_VE = [
+  "Amazonas", "Anzoátegui", "Apure", "Aragua", "Barinas", "Bolívar", "Carabobo",
+  "Cojedes", "Delta Amacuro", "Distrito Capital", "Falcón", "Guárico", "La Guaira",
+  "Lara", "Mérida", "Miranda", "Monagas", "Nueva Esparta", "Portuguesa", "Sucre",
+  "Táchira", "Trujillo", "Yaracuy", "Zulia", "Dependencias Federales",
+] as const;
+
 export function CVUpload({ origen }: { origen?: string } = {}) {
+  const [pais, setPais] = useState<string>("Venezuela");
   const [upload, setUpload] = useState<UploadState>({ status: "idle" });
   const [dragging, setDragging] = useState(false);
   const [submitted, setSubmitted] = useState(false);
