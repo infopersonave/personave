@@ -317,6 +317,7 @@ export const submitDemo = createServerFn({ method: "POST" })
     if (!out.posicion || !out.skills_requeridos) {
       throw new Error("Posición y skills requeridos son obligatorios");
     }
+    if (!out.genero_buscado) out.genero_buscado = "Indiferente";
     return out;
   })
   .handler(async ({ data }) => {
