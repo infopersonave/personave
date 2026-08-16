@@ -23,6 +23,7 @@ export type Database = {
           email: string | null
           empresa: string
           estado: string
+          genero_buscado: string | null
           id: string
           industria_principal: string | null
           modalidad: string | null
@@ -45,6 +46,7 @@ export type Database = {
           email?: string | null
           empresa: string
           estado?: string
+          genero_buscado?: string | null
           id?: string
           industria_principal?: string | null
           modalidad?: string | null
@@ -67,6 +69,7 @@ export type Database = {
           email?: string | null
           empresa?: string
           estado?: string
+          genero_buscado?: string | null
           id?: string
           industria_principal?: string | null
           modalidad?: string | null
