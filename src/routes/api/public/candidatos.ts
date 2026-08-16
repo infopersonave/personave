@@ -88,14 +88,15 @@ export const Route = createFileRoute("/api/public/candidatos")({
 
             if (existing) {
               // Update sin tocar `estado` (puede haber sido cambiado manualmente).
-              const patch: Record<string, unknown> = { ubicacion };
+              const patch: Partial<typeof fields> & { ubicacion?: string | null } = { ubicacion };
               for (const [k, v] of Object.entries(fields)) {
-                if (v !== null) patch[k] = v;
+                if (v !== null) (patch as Record<string, unknown>)[k] = v;
               }
               const { error: updErr } = await supabaseAdmin
                 .from("candidatos")
                 .update(patch)
                 .eq("id", existing.id);
+
               if (updErr) throw new Error(updErr.message);
               return Response.json({ ok: true, action: "updated", id: existing.id });
             }
