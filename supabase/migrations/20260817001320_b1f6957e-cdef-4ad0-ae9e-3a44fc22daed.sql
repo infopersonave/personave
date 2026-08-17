@@ -1,0 +1,15 @@
+ALTER TABLE public.candidatos
+  ADD COLUMN IF NOT EXISTS nombre_completo text,
+  ADD COLUMN IF NOT EXISTS telefono text,
+  ADD COLUMN IF NOT EXISTS pais text,
+  ADD COLUMN IF NOT EXISTS region text,
+  ADD COLUMN IF NOT EXISTS edad integer,
+  ADD COLUMN IF NOT EXISTS salario_esperado_usd numeric,
+  ADD COLUMN IF NOT EXISTS anos_experiencia integer,
+  ADD COLUMN IF NOT EXISTS industria_principal text,
+  ADD COLUMN IF NOT EXISTS skills text,
+  ADD COLUMN IF NOT EXISTS resumen_ia text,
+  ADD COLUMN IF NOT EXISTS link_cv text,
+  ADD COLUMN IF NOT EXISTS oportunidades_persona text,
+  ADD COLUMN IF NOT EXISTS linkedin text,
+  ADD COLUMN IF NOT EXISTS origen text;
