@@ -242,21 +242,27 @@ export type Database = {
           candidato_id: string | null
           created_at: string
           id: string
+          matching_run_id: string | null
           nivel_match: string | null
+          razones: string | null
         }
         Insert: {
           busqueda_id?: string | null
           candidato_id?: string | null
           created_at?: string
           id?: string
+          matching_run_id?: string | null
           nivel_match?: string | null
+          razones?: string | null
         }
         Update: {
           busqueda_id?: string | null
           candidato_id?: string | null
           created_at?: string
           id?: string
+          matching_run_id?: string | null
           nivel_match?: string | null
+          razones?: string | null
         }
         Relationships: [
           {
@@ -271,6 +277,42 @@ export type Database = {
             columns: ["candidato_id"]
             isOneToOne: false
             referencedRelation: "candidatos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "matching_results_matching_run_id_fkey"
+            columns: ["matching_run_id"]
+            isOneToOne: false
+            referencedRelation: "matching_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      matching_runs: {
+        Row: {
+          busqueda_id: string | null
+          created_at: string
+          criterios_snapshot: Json
+          id: string
+        }
+        Insert: {
+          busqueda_id?: string | null
+          created_at?: string
+          criterios_snapshot: Json
+          id?: string
+        }
+        Update: {
+          busqueda_id?: string | null
+          created_at?: string
+          criterios_snapshot?: Json
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "matching_runs_busqueda_id_fkey"
+            columns: ["busqueda_id"]
+            isOneToOne: false
+            referencedRelation: "busquedas"
             referencedColumns: ["id"]
           },
         ]
