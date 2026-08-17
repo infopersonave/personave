@@ -16,6 +16,7 @@ import { Route as DamnificadosIndexRouteImport } from './routes/damnificados.ind
 import { Route as DamnificadosInformalRouteImport } from './routes/damnificados.informal'
 import { Route as DamnificadosCandidatoRouteImport } from './routes/damnificados.candidato'
 import { Route as ApiPublicCandidatosRouteImport } from './routes/api/public/candidatos'
+import { Route as ApiPublicBusquedasRouteImport } from './routes/api/public/busquedas'
 import { Route as ApiPublicCvSubmissionIdFilenameRouteImport } from './routes/api/public/cv.$submissionId.$filename'
 
 const GuiaRoute = GuiaRouteImport.update({
@@ -53,6 +54,11 @@ const ApiPublicCandidatosRoute = ApiPublicCandidatosRouteImport.update({
   path: '/api/public/candidatos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicBusquedasRoute = ApiPublicBusquedasRouteImport.update({
+  id: '/api/public/busquedas',
+  path: '/api/public/busquedas',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicCvSubmissionIdFilenameRoute =
   ApiPublicCvSubmissionIdFilenameRouteImport.update({
     id: '/api/public/cv/$submissionId/$filename',
@@ -67,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/damnificados/candidato': typeof DamnificadosCandidatoRoute
   '/damnificados/informal': typeof DamnificadosInformalRoute
   '/damnificados/': typeof DamnificadosIndexRoute
+  '/api/public/busquedas': typeof ApiPublicBusquedasRoute
   '/api/public/candidatos': typeof ApiPublicCandidatosRoute
   '/api/public/cv/$submissionId/$filename': typeof ApiPublicCvSubmissionIdFilenameRoute
 }
@@ -77,6 +84,7 @@ export interface FileRoutesByTo {
   '/damnificados/candidato': typeof DamnificadosCandidatoRoute
   '/damnificados/informal': typeof DamnificadosInformalRoute
   '/damnificados': typeof DamnificadosIndexRoute
+  '/api/public/busquedas': typeof ApiPublicBusquedasRoute
   '/api/public/candidatos': typeof ApiPublicCandidatosRoute
   '/api/public/cv/$submissionId/$filename': typeof ApiPublicCvSubmissionIdFilenameRoute
 }
@@ -88,6 +96,7 @@ export interface FileRoutesById {
   '/damnificados/candidato': typeof DamnificadosCandidatoRoute
   '/damnificados/informal': typeof DamnificadosInformalRoute
   '/damnificados/': typeof DamnificadosIndexRoute
+  '/api/public/busquedas': typeof ApiPublicBusquedasRoute
   '/api/public/candidatos': typeof ApiPublicCandidatosRoute
   '/api/public/cv/$submissionId/$filename': typeof ApiPublicCvSubmissionIdFilenameRoute
 }
@@ -100,6 +109,7 @@ export interface FileRouteTypes {
     | '/damnificados/candidato'
     | '/damnificados/informal'
     | '/damnificados/'
+    | '/api/public/busquedas'
     | '/api/public/candidatos'
     | '/api/public/cv/$submissionId/$filename'
   fileRoutesByTo: FileRoutesByTo
@@ -110,6 +120,7 @@ export interface FileRouteTypes {
     | '/damnificados/candidato'
     | '/damnificados/informal'
     | '/damnificados'
+    | '/api/public/busquedas'
     | '/api/public/candidatos'
     | '/api/public/cv/$submissionId/$filename'
   id:
@@ -120,6 +131,7 @@ export interface FileRouteTypes {
     | '/damnificados/candidato'
     | '/damnificados/informal'
     | '/damnificados/'
+    | '/api/public/busquedas'
     | '/api/public/candidatos'
     | '/api/public/cv/$submissionId/$filename'
   fileRoutesById: FileRoutesById
@@ -131,6 +143,7 @@ export interface RootRouteChildren {
   DamnificadosCandidatoRoute: typeof DamnificadosCandidatoRoute
   DamnificadosInformalRoute: typeof DamnificadosInformalRoute
   DamnificadosIndexRoute: typeof DamnificadosIndexRoute
+  ApiPublicBusquedasRoute: typeof ApiPublicBusquedasRoute
   ApiPublicCandidatosRoute: typeof ApiPublicCandidatosRoute
   ApiPublicCvSubmissionIdFilenameRoute: typeof ApiPublicCvSubmissionIdFilenameRoute
 }
@@ -186,6 +199,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCandidatosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/busquedas': {
+      id: '/api/public/busquedas'
+      path: '/api/public/busquedas'
+      fullPath: '/api/public/busquedas'
+      preLoaderRoute: typeof ApiPublicBusquedasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cv/$submissionId/$filename': {
       id: '/api/public/cv/$submissionId/$filename'
       path: '/api/public/cv/$submissionId/$filename'
@@ -203,6 +223,7 @@ const rootRouteChildren: RootRouteChildren = {
   DamnificadosCandidatoRoute: DamnificadosCandidatoRoute,
   DamnificadosInformalRoute: DamnificadosInformalRoute,
   DamnificadosIndexRoute: DamnificadosIndexRoute,
+  ApiPublicBusquedasRoute: ApiPublicBusquedasRoute,
   ApiPublicCandidatosRoute: ApiPublicCandidatosRoute,
   ApiPublicCvSubmissionIdFilenameRoute: ApiPublicCvSubmissionIdFilenameRoute,
 }
