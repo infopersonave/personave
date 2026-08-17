@@ -17,7 +17,9 @@ export type Database = {
       busquedas: {
         Row: {
           anos_experiencia: number | null
+          anos_experiencia_minimos: number | null
           cargo: string | null
+          cargo_contacto: string | null
           created_at: string
           descripcion_rol: string | null
           email: string | null
@@ -25,6 +27,7 @@ export type Database = {
           estado: string
           genero_buscado: string | null
           id: string
+          industria_preferida: string | null
           industria_principal: string | null
           modalidad: string | null
           nombre_contacto: string | null
@@ -36,11 +39,14 @@ export type Database = {
           skills_deseables: string | null
           skills_requeridos: string | null
           telefono: string | null
+          telefono_contacto: string | null
           ubicacion: string | null
         }
         Insert: {
           anos_experiencia?: number | null
+          anos_experiencia_minimos?: number | null
           cargo?: string | null
+          cargo_contacto?: string | null
           created_at?: string
           descripcion_rol?: string | null
           email?: string | null
@@ -48,6 +54,7 @@ export type Database = {
           estado?: string
           genero_buscado?: string | null
           id?: string
+          industria_preferida?: string | null
           industria_principal?: string | null
           modalidad?: string | null
           nombre_contacto?: string | null
@@ -59,11 +66,14 @@ export type Database = {
           skills_deseables?: string | null
           skills_requeridos?: string | null
           telefono?: string | null
+          telefono_contacto?: string | null
           ubicacion?: string | null
         }
         Update: {
           anos_experiencia?: number | null
+          anos_experiencia_minimos?: number | null
           cargo?: string | null
+          cargo_contacto?: string | null
           created_at?: string
           descripcion_rol?: string | null
           email?: string | null
@@ -71,6 +81,7 @@ export type Database = {
           estado?: string
           genero_buscado?: string | null
           id?: string
+          industria_preferida?: string | null
           industria_principal?: string | null
           modalidad?: string | null
           nombre_contacto?: string | null
@@ -82,6 +93,7 @@ export type Database = {
           skills_deseables?: string | null
           skills_requeridos?: string | null
           telefono?: string | null
+          telefono_contacto?: string | null
           ubicacion?: string | null
         }
         Relationships: []
