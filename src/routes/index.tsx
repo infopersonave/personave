@@ -227,9 +227,9 @@ function Index() {
             <a href="#unete" className="bg-gradient-brand text-white font-semibold px-8 py-4 rounded-full shadow-glow hover:-translate-y-0.5 transition-all">
               Sube tu CV ahora
             </a>
-            <Link to="/empresas" className="border-2 border-primary text-primary font-semibold px-8 py-4 rounded-full hover:bg-primary hover:text-white transition-all">
+            <a href="#demo-empresas" className="border-2 border-primary text-primary font-semibold px-8 py-4 rounded-full hover:bg-primary hover:text-white transition-all">
               Soy empresa
-            </Link>
+            </a>
             <Link to="/damnificados" className="bg-white/90 text-[#8B5CF6] font-semibold px-8 py-4 rounded-full hover:bg-white transition-all">
               Damnificados del terremoto →
             </Link>
