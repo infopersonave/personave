@@ -193,19 +193,6 @@ function Index() {
         </div>
       </section>
 
-      {/* DEMO PARA EMPRESAS */}
-      <section id="demo-empresas" className="py-24">
-        <div className="mx-auto max-w-4xl px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold">Solicita tu demo</h2>
-            <p className="mt-4 text-lg text-muted-foreground">Cuéntanos qué vacante necesitas cubrir y te contactamos en 24 horas</p>
-          </div>
-          <div className="glass-strong rounded-3xl p-6 md:p-10 border border-primary/10 shadow-glow">
-            <DemoForm />
-          </div>
-        </div>
-      </section>
-
       {/* FAQ */}
       <section className="py-24 bg-bg-light">
         <div className="mx-auto max-w-7xl px-6">
