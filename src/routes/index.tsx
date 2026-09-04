@@ -6,7 +6,6 @@ import { CVUpload } from "@/components/CVUpload";
 import { FAQ } from "@/components/FAQ";
 import { Reviews } from "@/components/Reviews";
 import { GuiaCVCard } from "@/components/GuiaCVCard";
-import { DemoForm } from "@/components/DemoForm";
 
 export const Route = createFileRoute("/")({
   head: () => ({
