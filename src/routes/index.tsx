@@ -6,7 +6,6 @@ import { CVUpload } from "@/components/CVUpload";
 import { FAQ } from "@/components/FAQ";
 import { Reviews } from "@/components/Reviews";
 import { GuiaCVCard } from "@/components/GuiaCVCard";
-import { DemoForm } from "@/components/DemoForm";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -86,7 +85,7 @@ function Index() {
                   ))}
                 </ul>
                 <a
-                  href="#demo-empresas"
+                  href="#cta-final"
                   className="inline-flex items-center justify-center w-full bg-gradient-brand text-white font-semibold px-6 py-3.5 rounded-xl shadow-glow hover:shadow-xl transition-all hover:-translate-y-0.5"
                 >
                   Solicitar demo
@@ -194,19 +193,6 @@ function Index() {
         </div>
       </section>
 
-      {/* DEMO PARA EMPRESAS */}
-      <section id="demo-empresas" className="py-24">
-        <div className="mx-auto max-w-4xl px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold">Solicita tu demo</h2>
-            <p className="mt-4 text-lg text-muted-foreground">Cuéntanos qué vacante necesitas cubrir y te contactamos en 24 horas</p>
-          </div>
-          <div className="glass-strong rounded-3xl p-6 md:p-10 border border-primary/10 shadow-glow">
-            <DemoForm />
-          </div>
-        </div>
-      </section>
-
       {/* FAQ */}
       <section className="py-24 bg-bg-light">
         <div className="mx-auto max-w-7xl px-6">
@@ -221,7 +207,7 @@ function Index() {
       <Reviews />
 
       {/* CTA */}
-      <section className="py-24 bg-gradient-brand-soft">
+      <section id="cta-final" className="py-24 bg-gradient-brand-soft">
         <div className="mx-auto max-w-4xl px-6 text-center">
           <h2 className="text-4xl md:text-6xl font-bold tracking-tight">
             <span className="text-gradient">¿Listo para tu próxima oportunidad?</span>
@@ -233,9 +219,9 @@ function Index() {
             <a href="#unete" className="bg-gradient-brand text-white font-semibold px-8 py-4 rounded-full shadow-glow hover:-translate-y-0.5 transition-all">
               Sube tu CV ahora
             </a>
-            <a href="#demo-empresas" className="border-2 border-primary text-primary font-semibold px-8 py-4 rounded-full hover:bg-primary hover:text-white transition-all">
+            <Link to="/empresas" className="border-2 border-primary text-primary font-semibold px-8 py-4 rounded-full hover:bg-primary hover:text-white transition-all">
               Soy empresa
-            </a>
+            </Link>
             <Link to="/damnificados" className="bg-white/90 text-[#8B5CF6] font-semibold px-8 py-4 rounded-full hover:bg-white transition-all">
               Damnificados del terremoto →
             </Link>
