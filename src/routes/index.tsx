@@ -84,12 +84,13 @@ function Index() {
                     </li>
                   ))}
                 </ul>
-                <a
-                  href="#cta-final"
+                <Link
+                  to="/empresas"
+                  hash="contacto"
                   className="inline-flex items-center justify-center w-full bg-gradient-brand text-white font-semibold px-6 py-3.5 rounded-xl shadow-glow hover:shadow-xl transition-all hover:-translate-y-0.5"
                 >
                   Solicitar demo
-                </a>
+                </Link>
               </div>
             </div>
           </div>
