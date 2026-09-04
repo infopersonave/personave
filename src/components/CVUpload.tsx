@@ -171,8 +171,10 @@ export function CVUpload({ origen }: { origen?: string } = {}) {
                     : "border-border hover:border-primary/50 hover:bg-bg-light"
               }`}
             >
-              <Upload className="mx-auto w-10 h-10 text-muted-foreground mb-3" />
-              <p className="font-semibold">Arrastra tu CV aquí</p>
+              <div className="mx-auto w-14 h-14 rounded-2xl bg-gradient-brand/10 flex items-center justify-center mb-3">
+                <Upload className="w-7 h-7 text-primary" />
+              </div>
+              <p className="font-semibold text-base">Arrastra tu CV aquí</p>
               <p className="text-sm text-muted-foreground mt-1">o haz click para seleccionar</p>
               <p className="text-xs text-muted-foreground mt-3">PDF · máx 5MB</p>
               <input ref={inputRef} type="file" accept=".pdf,application/pdf" onChange={onChange} className="hidden" />
