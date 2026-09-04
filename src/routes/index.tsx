@@ -65,7 +65,33 @@ function Index() {
               </div>
             </div>
             <div className="animate-fade-up">
-              <DemoForm compact />
+              <div className="glass-strong rounded-3xl p-8 md:p-10 border border-primary/10 shadow-glow">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-brand-soft border border-primary/20 text-xs font-semibold mb-4">
+                  Para empresas
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold mb-3">¿Buscas talento validado?</h2>
+                <p className="text-muted-foreground mb-6">
+                  Cuéntanos qué perfil necesitas y te enviamos candidatos pre-filtrados en 48-72 horas.
+                </p>
+                <ul className="space-y-2 mb-8 text-sm">
+                  {[
+                    "Shortlists de 3-5 candidatos",
+                    "Validación humana + tecnología",
+                    "Proceso confidencial y rápido",
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-2">
+                      <span className="text-primary font-bold">✓</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href="#demo-empresas"
+                  className="inline-flex items-center justify-center w-full bg-gradient-brand text-white font-semibold px-6 py-3.5 rounded-xl shadow-glow hover:shadow-xl transition-all hover:-translate-y-0.5"
+                >
+                  Solicitar demo
+                </a>
+              </div>
             </div>
           </div>
 
@@ -162,8 +188,21 @@ function Index() {
         </div>
       </section>
 
+      {/* DEMO PARA EMPRESAS */}
+      <section id="demo-empresas" className="py-24">
+        <div className="mx-auto max-w-4xl px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold">Solicita tu demo</h2>
+            <p className="mt-4 text-lg text-muted-foreground">Cuéntanos qué vacante necesitas cubrir y te contactamos en 24 horas</p>
+          </div>
+          <div className="glass-strong rounded-3xl p-6 md:p-10 border border-primary/10 shadow-glow">
+            <DemoForm />
+          </div>
+        </div>
+      </section>
+
       {/* FAQ */}
-      <section className="py-24">
+      <section className="py-24 bg-bg-light">
         <div className="mx-auto max-w-7xl px-6">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold">Preguntas frecuentes</h2>
@@ -188,9 +227,9 @@ function Index() {
             <a href="#unete" className="bg-gradient-brand text-white font-semibold px-8 py-4 rounded-full shadow-glow hover:-translate-y-0.5 transition-all">
               Sube tu CV ahora
             </a>
-            <Link to="/empresas" className="border-2 border-primary text-primary font-semibold px-8 py-4 rounded-full hover:bg-primary hover:text-white transition-all">
+            <a href="#demo-empresas" className="border-2 border-primary text-primary font-semibold px-8 py-4 rounded-full hover:bg-primary hover:text-white transition-all">
               Soy empresa
-            </Link>
+            </a>
             <Link to="/damnificados" className="bg-white/90 text-[#8B5CF6] font-semibold px-8 py-4 rounded-full hover:bg-white transition-all">
               Damnificados del terremoto →
             </Link>
