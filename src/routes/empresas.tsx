@@ -1,10 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
-import { useState, type FormEvent } from "react";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
-import { CheckCircle2 } from "lucide-react";
-import { submitDemo } from "@/lib/forms.functions";
+import { DemoForm } from "@/components/DemoForm";
 
 export const Route = createFileRoute("/empresas")({
   head: () => ({
