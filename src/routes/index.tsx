@@ -47,22 +47,27 @@ function Index() {
       <Nav />
 
       {/* HERO */}
-      <section id="hero" className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-mesh">
-        <div className="mx-auto max-w-7xl px-6 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <div className="animate-fade-up">
+      <section id="hero" className="relative pt-32 pb-16 md:pt-40 md:pb-20 overflow-hidden bg-mesh">
+        <div className="mx-auto max-w-7xl px-6 text-center">
+          <div className="animate-fade-up max-w-3xl mx-auto">
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05]">
               <span className="text-gradient">La nueva red de talento</span> en Venezuela
             </h1>
-            <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-xl">
-              Conectamos personas correctas con oportunidades correctas. Talento validado, contratación humana, oportunidades reales.
+            <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+              Conectamos empresas con personas correctas. Talento validado, contratación humana, oportunidades reales.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              {["✓ Talento validado", "✓ Proceso rápido", "✓ Talento venezolano, alcance global"].map((b) => (
-                <span key={b} className="px-4 py-2 rounded-full bg-white/70 backdrop-blur border border-border text-sm font-medium">{b}</span>
-              ))}
-            </div>
           </div>
-          <div className="lg:pl-8 space-y-5">
+        </div>
+      </section>
+
+      {/* ÚNETE A LA RED */}
+      <section id="unete" className="relative pb-20 md:pb-28 overflow-hidden bg-mesh">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-bold">Únete a la red</h2>
+            <p className="mt-3 text-muted-foreground max-w-xl mx-auto">Sube tu CV y déjanos conectarte con las oportunidades que encajan contigo.</p>
+          </div>
+          <div className="max-w-xl mx-auto space-y-5">
             <GuiaCVCard variant="inline" />
             <CVUpload />
           </div>
