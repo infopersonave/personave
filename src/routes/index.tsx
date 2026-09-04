@@ -188,18 +188,18 @@ function Index() {
       <section className="py-24 bg-gradient-brand-soft">
         <div className="mx-auto max-w-4xl px-6 text-center">
           <h2 className="text-4xl md:text-6xl font-bold tracking-tight">
-            <span className="text-gradient">¿Listo para tu próxima oportunidad?</span>
+            <span className="text-gradient">¿Buscas talento para tu empresa?</span>
           </h2>
           <p className="mt-5 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Únete a cientos de profesionales que ya encontraron su match perfecto
+            Agenda una demo y recibe candidatos validados en 48-72 horas
           </p>
           <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
-            <a href="#hero" className="bg-gradient-brand text-white font-semibold px-8 py-4 rounded-full shadow-glow hover:-translate-y-0.5 transition-all">
-              Sube tu CV ahora
-            </a>
-            <Link to="/empresas" className="border-2 border-primary text-primary font-semibold px-8 py-4 rounded-full hover:bg-primary hover:text-white transition-all">
-              Soy empresa
+            <Link to="/empresas" className="bg-gradient-brand text-white font-semibold px-8 py-4 rounded-full shadow-glow hover:-translate-y-0.5 transition-all">
+              Solicitar demo para empresas
             </Link>
+            <a href="#cv" className="border-2 border-primary text-primary font-semibold px-8 py-4 rounded-full hover:bg-primary hover:text-white transition-all">
+              Soy profesional → Sube tu CV
+            </a>
             <Link to="/damnificados" className="bg-white/90 text-[#8B5CF6] font-semibold px-8 py-4 rounded-full hover:bg-white transition-all">
               Damnificados del terremoto →
             </Link>
