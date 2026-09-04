@@ -50,36 +50,19 @@ function Index() {
       <section id="hero" className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-mesh">
         <div className="mx-auto max-w-7xl px-6 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div className="animate-fade-up">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/70 backdrop-blur border border-border text-sm font-medium mb-6">
-              🇻🇪 La red de talento de Venezuela
-            </div>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05]">
-              Contrata <span className="text-gradient">talento validado</span>, no CVs sueltos
+              <span className="text-gradient">La nueva red de talento</span> en Venezuela
             </h1>
             <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-xl">
-              Recibe shortlists de profesionales venezolanos verificados en 48-72 horas. Nosotros validamos, tú solo entrevistas y contratas.
+              Conectamos personas correctas con oportunidades correctas. Talento validado, contratación humana, oportunidades reales.
             </p>
-            <div className="mt-10 flex flex-col sm:flex-row gap-3">
-              <Link
-                to="/empresas"
-                className="bg-gradient-brand text-white font-semibold px-8 py-4 rounded-full shadow-glow hover:-translate-y-0.5 transition-all text-center"
-              >
-                Solicitar demo para empresas
-              </Link>
-              <a
-                href="#cv"
-                className="border-2 border-primary text-primary font-semibold px-8 py-4 rounded-full hover:bg-primary hover:text-white transition-all text-center"
-              >
-                Soy profesional → Sube tu CV
-              </a>
-            </div>
             <div className="mt-8 flex flex-wrap gap-3">
-              {["✓ Talento validado", "✓ Shortlist en 48-72h", "✓ Talento venezolano, alcance global"].map((b) => (
+              {["✓ Talento validado", "✓ Proceso rápido", "✓ Talento venezolano, alcance global"].map((b) => (
                 <span key={b} className="px-4 py-2 rounded-full bg-white/70 backdrop-blur border border-border text-sm font-medium">{b}</span>
               ))}
             </div>
           </div>
-          <div id="cv" className="lg:pl-8 space-y-5 scroll-mt-28">
+          <div className="lg:pl-8 space-y-5">
             <GuiaCVCard variant="inline" />
             <CVUpload />
           </div>
@@ -188,18 +171,18 @@ function Index() {
       <section className="py-24 bg-gradient-brand-soft">
         <div className="mx-auto max-w-4xl px-6 text-center">
           <h2 className="text-4xl md:text-6xl font-bold tracking-tight">
-            <span className="text-gradient">¿Buscas talento para tu empresa?</span>
+            <span className="text-gradient">¿Listo para tu próxima oportunidad?</span>
           </h2>
           <p className="mt-5 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Agenda una demo y recibe candidatos validados en 48-72 horas
+            Únete a cientos de profesionales que ya encontraron su match perfecto
           </p>
           <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
-            <Link to="/empresas" className="bg-gradient-brand text-white font-semibold px-8 py-4 rounded-full shadow-glow hover:-translate-y-0.5 transition-all">
-              Solicitar demo para empresas
-            </Link>
-            <a href="#cv" className="border-2 border-primary text-primary font-semibold px-8 py-4 rounded-full hover:bg-primary hover:text-white transition-all">
-              Soy profesional → Sube tu CV
+            <a href="#hero" className="bg-gradient-brand text-white font-semibold px-8 py-4 rounded-full shadow-glow hover:-translate-y-0.5 transition-all">
+              Sube tu CV ahora
             </a>
+            <Link to="/empresas" className="border-2 border-primary text-primary font-semibold px-8 py-4 rounded-full hover:bg-primary hover:text-white transition-all">
+              Soy empresa
+            </Link>
             <Link to="/damnificados" className="bg-white/90 text-[#8B5CF6] font-semibold px-8 py-4 rounded-full hover:bg-white transition-all">
               Damnificados del terremoto →
             </Link>
