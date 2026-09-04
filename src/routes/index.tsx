@@ -96,9 +96,15 @@ function Index() {
           </div>
 
           {/* ÚNETE A LA RED + GUÍA */}
-          <div className="mt-12 grid md:grid-cols-[2fr_1fr] gap-5 items-start max-w-5xl mx-auto">
-            <CVUpload />
-            <GuiaCVCard variant="inline" />
+          <div className="mt-16 max-w-5xl mx-auto">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl md:text-3xl font-bold">Para profesionales</h2>
+              <p className="mt-2 text-muted-foreground">Únete gratis o potencia tu CV con nuestra guía</p>
+            </div>
+            <div className="grid md:grid-cols-[2fr_1fr] gap-5 items-start">
+              <CVUpload />
+              <GuiaCVCard variant="inline" />
+            </div>
           </div>
         </div>
       </section>
