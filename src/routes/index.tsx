@@ -11,9 +11,9 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Persona — La nueva red de talento en Venezuela" },
-      { name: "description", content: "Conectamos personas correctas con oportunidades correctas. Talento validado, contratación humana, oportunidades reales en Venezuela." },
+      { name: "description", content: "Conectamos empresas con personas correctas. Talento validado, contratación humana, oportunidades reales en Venezuela." },
       { property: "og:title", content: "Persona — Red de talento en Venezuela" },
-      { property: "og:description", content: "Sube tu CV y accede a oportunidades reales. 100% gratis para profesionales." },
+      { property: "og:description", content: "Conectamos empresas con personas correctas. Talento validado, contratación humana, oportunidades reales." },
     ],
   }),
   component: Index,
