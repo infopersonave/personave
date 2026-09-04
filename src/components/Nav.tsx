@@ -20,7 +20,7 @@ export function Nav({ variant = "candidate" }: { variant?: "candidate" | "busine
             Damnificados
           </Link>
           {variant === "candidate" ? (
-            <a href="#hero" className="bg-white text-primary text-sm font-bold px-5 py-2.5 rounded-full hover:shadow-xl transition-all hover:-translate-y-0.5">
+            <a href="#unete" className="bg-white text-primary text-sm font-bold px-5 py-2.5 rounded-full hover:shadow-xl transition-all hover:-translate-y-0.5">
               Únete Ahora
             </a>
           ) : (
