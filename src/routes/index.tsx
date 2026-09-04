@@ -182,7 +182,7 @@ function Index() {
             Únete a cientos de profesionales que ya encontraron su match perfecto
           </p>
           <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
-            <a href="#hero" className="bg-gradient-brand text-white font-semibold px-8 py-4 rounded-full shadow-glow hover:-translate-y-0.5 transition-all">
+            <a href="#unete" className="bg-gradient-brand text-white font-semibold px-8 py-4 rounded-full shadow-glow hover:-translate-y-0.5 transition-all">
               Sube tu CV ahora
             </a>
             <Link to="/empresas" className="border-2 border-primary text-primary font-semibold px-8 py-4 rounded-full hover:bg-primary hover:text-white transition-all">
