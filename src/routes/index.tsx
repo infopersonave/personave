@@ -65,7 +65,33 @@ function Index() {
               </div>
             </div>
             <div className="animate-fade-up">
-              <DemoForm compact />
+              <div className="glass-strong rounded-3xl p-8 md:p-10 border border-primary/10 shadow-glow">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-brand-soft border border-primary/20 text-xs font-semibold mb-4">
+                  Para empresas
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold mb-3">¿Buscas talento validado?</h2>
+                <p className="text-muted-foreground mb-6">
+                  Cuéntanos qué perfil necesitas y te enviamos candidatos pre-filtrados en 48-72 horas.
+                </p>
+                <ul className="space-y-2 mb-8 text-sm">
+                  {[
+                    "Shortlists de 3-5 candidatos",
+                    "Validación humana + tecnología",
+                    "Proceso confidencial y rápido",
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-2">
+                      <span className="text-primary font-bold">✓</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href="#demo-empresas"
+                  className="inline-flex items-center justify-center w-full bg-gradient-brand text-white font-semibold px-6 py-3.5 rounded-xl shadow-glow hover:shadow-xl transition-all hover:-translate-y-0.5"
+                >
+                  Solicitar demo
+                </a>
+              </div>
             </div>
           </div>
 
