@@ -117,16 +117,31 @@ export function GuiaCVCard({ variant = "inline" }: { variant?: "inline" | "page"
   return (
     <>
       <div
-        className="rounded-[8px] p-6 md:p-7 text-white shadow-glow"
+        className="rounded-3xl p-7 text-white shadow-glow"
         style={{ background: "linear-gradient(135deg, #5B8AFF 0%, #8B5CF6 50%, #EC4899 100%)", fontFamily: "Outfit, system-ui, sans-serif" }}
       >
         <div className="flex items-start gap-4">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center flex-wrap gap-2 mb-2">
               <h3 className="text-xl md:text-2xl font-bold">CV que Conecta</h3>
-              <span className="text-[10px] uppercase tracking-wider bg-white/20 rounded-[8px] px-2 py-0.5">Opcional</span>
+              <span className="text-[10px] uppercase tracking-wider font-bold bg-white/25 text-white rounded-full px-2.5 py-0.5">Guía premium</span>
             </div>
-            <p className="text-sm text-white/90 mb-3">Guía práctica para estructurar tu currículum y destacar ante reclutadores.</p>
+            <p className="text-sm text-white/90 mb-4">Guía práctica para estructurar tu currículum y destacar ante reclutadores.</p>
+
+            <ul className="space-y-2 mb-5">
+              {[
+                "Plantillas listas para usar",
+                "Ejemplos de perfil profesional",
+                "Tips de reclutadores",
+                "Formato que pasa filtros ATS",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-white/90">
+                  <CheckCircle2 className="w-4 h-4 text-white shrink-0 mt-0.5" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+
             <div className="flex flex-wrap items-center gap-3 mb-4">
               <span className="text-2xl font-bold">€{PRICE_EUR.toFixed(2)}</span>
               {loadingRate && <span className="text-xs text-white/80">Calculando Bs…</span>}
@@ -140,12 +155,12 @@ export function GuiaCVCard({ variant = "inline" }: { variant?: "inline" | "page"
             <button
               onClick={() => setOpen(true)}
               disabled={!montoBs}
-              className="bg-white text-[#8B5CF6] font-bold px-5 py-2.5 rounded-[8px] hover:-translate-y-0.5 transition-all disabled:opacity-60"
+              className="bg-white text-[#8B5CF6] font-bold px-5 py-2.5 rounded-xl hover:-translate-y-0.5 transition-all disabled:opacity-60 shadow-lg"
             >
               Comprar guía
             </button>
             {variant === "inline" && (
-              <p className="mt-3 text-xs text-white/80">Este paso es opcional — puedes continuar sin adquirir la guía.</p>
+              <p className="mt-3 text-xs text-white/80">Opcional — puedes unirte a la red sin comprar la guía.</p>
             )}
           </div>
         </div>
