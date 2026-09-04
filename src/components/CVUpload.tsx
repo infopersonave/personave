@@ -123,18 +123,35 @@ export function CVUpload({ origen }: { origen?: string } = {}) {
 
   return (
     <div className="glass-strong rounded-3xl p-7 md:p-8 shadow-card">
-      <div className="flex items-center gap-4 mb-5">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-brand flex items-center justify-center shadow-glow">
+      <div className="flex items-start gap-4 mb-5">
+        <div className="w-12 h-12 rounded-2xl bg-gradient-brand flex items-center justify-center shadow-glow shrink-0">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="9" r="3.5" fill="white" />
             <path d="M4 21 Q5 15 12 15 Q19 15 20 21 Z" fill="white" />
           </svg>
         </div>
-        <div>
-          <h3 className="text-xl font-bold">Únete a la red</h3>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center flex-wrap gap-2 mb-1">
+            <h3 className="text-xl font-bold">Únete a la red</h3>
+            <span className="text-[10px] uppercase tracking-wider font-bold bg-emerald-100 text-emerald-700 rounded-full px-2 py-0.5">100% gratis</span>
+          </div>
           <p className="text-sm text-muted-foreground">Sube tu CV y accede a oportunidades reales</p>
         </div>
       </div>
+
+      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-5">
+        {[
+          "Perfil revisado por nuestro equipo",
+          "Matches con empresas activas",
+          "Notificaciones de oportunidades",
+          "Sin costo para ti",
+        ].map((item) => (
+          <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
+            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
 
       <form onSubmit={onSubmit} className="space-y-4">
         {origen ? <input type="hidden" name="origen" value={origen} /> : null}
@@ -154,8 +171,10 @@ export function CVUpload({ origen }: { origen?: string } = {}) {
                     : "border-border hover:border-primary/50 hover:bg-bg-light"
               }`}
             >
-              <Upload className="mx-auto w-10 h-10 text-muted-foreground mb-3" />
-              <p className="font-semibold">Arrastra tu CV aquí</p>
+              <div className="mx-auto w-14 h-14 rounded-2xl bg-gradient-brand/10 flex items-center justify-center mb-3">
+                <Upload className="w-7 h-7 text-primary" />
+              </div>
+              <p className="font-semibold text-base">Arrastra tu CV aquí</p>
               <p className="text-sm text-muted-foreground mt-1">o haz click para seleccionar</p>
               <p className="text-xs text-muted-foreground mt-3">PDF · máx 5MB</p>
               <input ref={inputRef} type="file" accept=".pdf,application/pdf" onChange={onChange} className="hidden" />
