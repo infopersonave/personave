@@ -86,6 +86,38 @@ export type Database = {
         }
         Relationships: []
       }
+      candidato_accesos: {
+        Row: {
+          candidato_id: string
+          created_at: string
+          id: string
+          tipo: string
+          visto_por: string
+        }
+        Insert: {
+          candidato_id: string
+          created_at?: string
+          id?: string
+          tipo: string
+          visto_por: string
+        }
+        Update: {
+          candidato_id?: string
+          created_at?: string
+          id?: string
+          tipo?: string
+          visto_por?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "candidato_accesos_candidato_id_fkey"
+            columns: ["candidato_id"]
+            isOneToOne: false
+            referencedRelation: "candidatos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       candidatos: {
         Row: {
           anos_experiencia: number | null
@@ -151,6 +183,54 @@ export type Database = {
           ubicacion?: string | null
         }
         Relationships: []
+      }
+      colocaciones: {
+        Row: {
+          candidato_id: string
+          comision_monto: number
+          comision_pct: number
+          created_at: string
+          id: string
+          matching_result_id: string
+          monto_colocacion: number
+          registrado_por: string
+        }
+        Insert: {
+          candidato_id: string
+          comision_monto: number
+          comision_pct?: number
+          created_at?: string
+          id?: string
+          matching_result_id: string
+          monto_colocacion: number
+          registrado_por: string
+        }
+        Update: {
+          candidato_id?: string
+          comision_monto?: number
+          comision_pct?: number
+          created_at?: string
+          id?: string
+          matching_result_id?: string
+          monto_colocacion?: number
+          registrado_por?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "colocaciones_candidato_id_fkey"
+            columns: ["candidato_id"]
+            isOneToOne: false
+            referencedRelation: "candidatos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "colocaciones_matching_result_id_fkey"
+            columns: ["matching_result_id"]
+            isOneToOne: false
+            referencedRelation: "matching_results"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       compras_guia: {
         Row: {
@@ -241,27 +321,33 @@ export type Database = {
           busqueda_id: string | null
           candidato_id: string | null
           created_at: string
+          estado: string
           id: string
           matching_run_id: string | null
           nivel_match: string | null
+          orden: number
           razones: string | null
         }
         Insert: {
           busqueda_id?: string | null
           candidato_id?: string | null
           created_at?: string
+          estado?: string
           id?: string
           matching_run_id?: string | null
           nivel_match?: string | null
+          orden?: number
           razones?: string | null
         }
         Update: {
           busqueda_id?: string | null
           candidato_id?: string | null
           created_at?: string
+          estado?: string
           id?: string
           matching_run_id?: string | null
           nivel_match?: string | null
+          orden?: number
           razones?: string | null
         }
         Relationships: [
@@ -292,20 +378,26 @@ export type Database = {
         Row: {
           busqueda_id: string | null
           created_at: string
+          created_by: string | null
           criterios_snapshot: Json
           id: string
+          partner_nombre: string | null
         }
         Insert: {
           busqueda_id?: string | null
           created_at?: string
+          created_by?: string | null
           criterios_snapshot: Json
           id?: string
+          partner_nombre?: string | null
         }
         Update: {
           busqueda_id?: string | null
           created_at?: string
+          created_by?: string | null
           criterios_snapshot?: Json
           id?: string
+          partner_nombre?: string | null
         }
         Relationships: [
           {
@@ -316,6 +408,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      partner_usuarios: {
+        Row: {
+          created_at: string
+          email: string
+          partner_nombre: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          partner_nombre: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          partner_nombre?: string
+        }
+        Relationships: []
       }
       reviews: {
         Row: {
