@@ -9,19 +9,19 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as GuiaRouteImport } from './routes/guia'
-import { Route as EmpresasRouteImport } from './routes/empresas'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EmpresasRouteImport } from './routes/empresas'
+import { Route as GuiaRouteImport } from './routes/guia'
 import { Route as DamnificadosIndexRouteImport } from './routes/damnificados.index'
-import { Route as DamnificadosInformalRouteImport } from './routes/damnificados.informal'
 import { Route as DamnificadosCandidatoRouteImport } from './routes/damnificados.candidato'
-import { Route as ApiPublicCandidatosRouteImport } from './routes/api/public/candidatos'
+import { Route as DamnificadosInformalRouteImport } from './routes/damnificados.informal'
 import { Route as ApiPublicBusquedasRouteImport } from './routes/api/public/busquedas'
+import { Route as ApiPublicCandidatosRouteImport } from './routes/api/public/candidatos'
 import { Route as ApiPublicCvSubmissionIdFilenameRouteImport } from './routes/api/public/cv.$submissionId.$filename'
 
-const GuiaRoute = GuiaRouteImport.update({
-  id: '/guia',
-  path: '/guia',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EmpresasRoute = EmpresasRouteImport.update({
@@ -29,9 +29,9 @@ const EmpresasRoute = EmpresasRouteImport.update({
   path: '/empresas',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const GuiaRoute = GuiaRouteImport.update({
+  id: '/guia',
+  path: '/guia',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DamnificadosIndexRoute = DamnificadosIndexRouteImport.update({
@@ -39,24 +39,24 @@ const DamnificadosIndexRoute = DamnificadosIndexRouteImport.update({
   path: '/damnificados/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DamnificadosInformalRoute = DamnificadosInformalRouteImport.update({
-  id: '/damnificados/informal',
-  path: '/damnificados/informal',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const DamnificadosCandidatoRoute = DamnificadosCandidatoRouteImport.update({
   id: '/damnificados/candidato',
   path: '/damnificados/candidato',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicCandidatosRoute = ApiPublicCandidatosRouteImport.update({
-  id: '/api/public/candidatos',
-  path: '/api/public/candidatos',
+const DamnificadosInformalRoute = DamnificadosInformalRouteImport.update({
+  id: '/damnificados/informal',
+  path: '/damnificados/informal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicBusquedasRoute = ApiPublicBusquedasRouteImport.update({
   id: '/api/public/busquedas',
   path: '/api/public/busquedas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicCandidatosRoute = ApiPublicCandidatosRouteImport.update({
+  id: '/api/public/candidatos',
+  path: '/api/public/candidatos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicCvSubmissionIdFilenameRoute =
@@ -150,11 +150,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/guia': {
-      id: '/guia'
-      path: '/guia'
-      fullPath: '/guia'
-      preLoaderRoute: typeof GuiaRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/empresas': {
@@ -164,11 +164,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmpresasRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/guia': {
+      id: '/guia'
+      path: '/guia'
+      fullPath: '/guia'
+      preLoaderRoute: typeof GuiaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/damnificados/': {
@@ -178,13 +178,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DamnificadosIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/damnificados/informal': {
-      id: '/damnificados/informal'
-      path: '/damnificados/informal'
-      fullPath: '/damnificados/informal'
-      preLoaderRoute: typeof DamnificadosInformalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/damnificados/candidato': {
       id: '/damnificados/candidato'
       path: '/damnificados/candidato'
@@ -192,11 +185,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DamnificadosCandidatoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/candidatos': {
-      id: '/api/public/candidatos'
-      path: '/api/public/candidatos'
-      fullPath: '/api/public/candidatos'
-      preLoaderRoute: typeof ApiPublicCandidatosRouteImport
+    '/damnificados/informal': {
+      id: '/damnificados/informal'
+      path: '/damnificados/informal'
+      fullPath: '/damnificados/informal'
+      preLoaderRoute: typeof DamnificadosInformalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/busquedas': {
@@ -204,6 +197,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/busquedas'
       fullPath: '/api/public/busquedas'
       preLoaderRoute: typeof ApiPublicBusquedasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/candidatos': {
+      id: '/api/public/candidatos'
+      path: '/api/public/candidatos'
+      fullPath: '/api/public/candidatos'
+      preLoaderRoute: typeof ApiPublicCandidatosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/cv/$submissionId/$filename': {
