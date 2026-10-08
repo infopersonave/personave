@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { Logo } from "./Logo";
 
-const linkCls = "text-sm font-semibold text-white/90 hover:text-white transition whitespace-nowrap";
+const linkCls =
+  "text-xs sm:text-sm font-semibold text-white/90 hover:text-white transition whitespace-nowrap";
 
 export function Nav({ variant = "candidate" }: { variant?: "candidate" | "business" }) {
   const onEmpresas = variant === "business";
