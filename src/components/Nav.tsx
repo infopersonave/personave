@@ -21,13 +21,13 @@ export function Nav({ variant = "candidate" }: { variant?: "candidate" | "busine
               Solicitar demo
             </Link>
           )}
-          <Link to="/guia" className={`${linkCls} hidden xs:inline`}>
+          <Link to="/guia" className={linkCls}>
             Guía CV
           </Link>
           <Link
             to="/"
             hash="unete"
-            className="bg-white text-primary text-sm font-bold px-4 sm:px-5 py-2.5 rounded-full hover:shadow-xl transition-all hover:-translate-y-0.5 whitespace-nowrap"
+            className="bg-white text-primary text-xs sm:text-sm font-bold px-3 sm:px-5 py-2 sm:py-2.5 rounded-full hover:shadow-xl transition-all hover:-translate-y-0.5 whitespace-nowrap"
           >
             Únete a la red
           </Link>
