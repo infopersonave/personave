@@ -8,6 +8,13 @@
       "when": 1793737414174,
       "tag": "0000_add_updated_by_updated_at_busquedas_candidatos",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793737570574,
+      "tag": "0001_rls_partner_usuarios_candidato_accesos_colocaciones",
+      "breakpoints": true
     }
   ]
 }
