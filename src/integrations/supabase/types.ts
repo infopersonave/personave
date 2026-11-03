@@ -37,6 +37,8 @@ export type Database = {
           skills_requeridos: string | null
           telefono_contacto: string | null
           ubicacion: string | null
+          updated_at: string | null
+          updated_by: string | null
         }
         Insert: {
           anos_experiencia_minimos?: number | null
@@ -60,6 +62,8 @@ export type Database = {
           skills_requeridos?: string | null
           telefono_contacto?: string | null
           ubicacion?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Update: {
           anos_experiencia_minimos?: number | null
@@ -83,6 +87,8 @@ export type Database = {
           skills_requeridos?: string | null
           telefono_contacto?: string | null
           ubicacion?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Relationships: []
       }
@@ -139,6 +145,8 @@ export type Database = {
           skills: string | null
           telefono: string | null
           ubicacion: string | null
+          updated_at: string | null
+          updated_by: string | null
         }
         Insert: {
           anos_experiencia?: number | null
@@ -160,6 +168,8 @@ export type Database = {
           skills?: string | null
           telefono?: string | null
           ubicacion?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Update: {
           anos_experiencia?: number | null
@@ -181,6 +191,8 @@ export type Database = {
           skills?: string | null
           telefono?: string | null
           ubicacion?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
         }
         Relationships: []
       }
